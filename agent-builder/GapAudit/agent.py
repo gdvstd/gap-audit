@@ -17,12 +17,12 @@ entity types, store names, and span locations only.
 Partner MCP servers (track-qualifying): Arize Phoenix MCP + MongoDB MCP.
 
 Run locally (no GCP billing needed — Gemini API key only):
-    GEMINI_API_KEY=... PHOENIX_API_KEY=... MONGODB_URI=... adk web ./agent-builder/adk
+    GEMINI_API_KEY=... PHOENIX_API_KEY=... MONGODB_URI=... adk web ./agent-builder/GapAudit
 
 Deploy to Vertex AI Agent Engine (Agent Builder):
     adk deploy agent_engine --project=$GCP --region=$REGION \
-        --staging_bucket=gs://$BUCKET --install_script=./agent-builder/adk/install.sh \
-        ./agent-builder/adk
+        --staging_bucket=gs://$BUCKET --install_script=./agent-builder/GapAudit/install.sh \
+        ./agent-builder/GapAudit
 """
 import os
 import re

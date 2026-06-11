@@ -18,7 +18,7 @@ The hackathon requires: *"meaningfully integrate at least one participating part
 - `audit-workflow.json` — the workflow definition (steps + tool wiring), backend-neutral.
 - `mcp-servers.json` — registration of the Phoenix and MongoDB MCP servers (transport, auth, tools used). Secrets are env-referenced; fill at deploy time.
 - **`DEPLOY.md`** — step-by-step deployment guide (ADK → Vertex AI Agent Engine).
-- `adk/` — the deployable ADK agent: `agent.py` (Gemini + Phoenix MCP + MongoDB MCP), `requirements.txt`, `install.sh` (installs Node so the npx MCP servers run).
+- `GapAudit/` — the deployable ADK agent: `agent.py` (Gemini + Phoenix MCP + MongoDB MCP), `requirements.txt`, `install.sh` (installs Node so the npx MCP servers run).
 
 ## Privacy boundary (important)
 
@@ -35,9 +35,9 @@ This keeps **privacy by construction** intact while still meaningfully using the
 
 **See [`DEPLOY.md`](DEPLOY.md) for the full step-by-step guide** (ADK → Vertex AI Agent Engine). In short:
 
-1. Build the agent with Google ADK (`adk/agent.py`) — Gemini + `McpToolset` for Phoenix MCP and MongoDB MCP.
-2. Test locally: `adk run ./adk` (or `adk web ./adk`).
-3. Deploy: `adk deploy agent_engine --project=… --region=… --staging_bucket=gs://… --install_script=./adk/install.sh ./adk`.
+1. Build the agent with Google ADK (`GapAudit/agent.py`) — Gemini + `McpToolset` for Phoenix MCP and MongoDB MCP.
+2. Test locally: `adk run ./GapAudit` (or `adk web ./GapAudit`).
+3. Deploy: `adk deploy agent_engine --project=… --region=… --staging_bucket=gs://… --install_script=./GapAudit/install.sh ./GapAudit`.
 4. Point the SilentOps app at the deployed agent via `AGENT_BUILDER_ENABLED=true` + `AGENT_BUILDER_APP_ID=<reasoningEngines/…>`; the app triggers it through `WorkflowOrchestratorAdapter` (`lib/integrations/workflow-orchestrator.ts`), falling back to in-process execution if unreachable.
 
 ## Fallback (local / seeded demo)

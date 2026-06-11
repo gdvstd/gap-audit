@@ -5,7 +5,7 @@ built with the **Agent Development Kit (ADK)** and deployed to **Vertex AI Agent
 (the managed runtime under Vertex AI Agent Builder), that meaningfully uses two partner
 MCP servers — **Arize Phoenix MCP** and **MongoDB MCP**.
 
-Files in `agent-builder/adk/`:
+Files in `agent-builder/GapAudit/`:
 - `agent.py` — the ADK agent (Gemini + Phoenix MCP + MongoDB MCP + a normalize/audit tool)
 - `requirements.txt` — Python deps (`google-adk`, `mcp`, `requests`)
 - `install.sh` — Agent Engine custom install script (installs Node so the `npx` MCP servers run)
@@ -54,8 +54,8 @@ local `adk run` testing, export them):
 ```bash
 export $(grep -v '^#' .env.local | grep -v '^$' | xargs)   # Phoenix/Mongo/Gemini vars
 cd agent-builder
-adk run ./adk          # interactive: ask it to "audit recent traces"
-# or: adk web ./adk    # local web UI
+adk run ./GapAudit          # interactive: ask it to "audit recent traces"
+# or: adk web ./GapAudit    # local web UI
 ```
 You should see the agent call Phoenix MCP (`list-traces`), then `normalize_and_audit`,
 then MongoDB MCP. This is the same flow `pnpm mcp:introspect` proves for the Phoenix side.
@@ -68,8 +68,8 @@ adk deploy agent_engine \
   --region=<REGION> \
   --staging_bucket="gs://<YOUR_BUCKET>" \
   --display_name="SilentOps Auditor" \
-  --install_script=./adk/install.sh \
-  ./adk
+  --install_script=./GapAudit/install.sh \
+  ./GapAudit
 ```
 - `--install_script` runs `install.sh` during the build so Node/`npx` is available for the
   stdio MCP servers. (If your ADK version names this flag differently, set the custom
