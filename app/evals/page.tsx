@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getMemory } from "@/lib/runtime/container";
 import { listRegressionSuites } from "@/lib/review/regression-suites";
+import { listPhoenixDatasets } from "@/lib/integrations/phoenix-datasets";
 import type { RegressionEvalCase } from "@/lib/contracts/regression-eval-case";
 
 function phoenixDatasetUrl(datasetId: string | undefined): string | undefined {
@@ -14,6 +15,16 @@ function phoenixDatasetUrl(datasetId: string | undefined): string | undefined {
 export default async function EvalsPage() {
   const memory = await getMemory();
   const [evalCases, suites] = await Promise.all([memory.listEvalCases(), listRegressionSuites()]);
+
+  // Sync with Phoenix: a suite is only shown if its dataset still exists in Phoenix, so
+  // deleting the dataset in Phoenix removes it here too. If Phoenix is unreachable, fall
+  // back to showing all (a transient error shouldn't hide every suite).
+  let phoenixNames: Set<string> | null = null;
+  try {
+    phoenixNames = new Set((await listPhoenixDatasets()).map((d) => d.name));
+  } catch {
+    phoenixNames = null;
+  }
 
   // Group test cases by their regression suite (Phoenix dataset).
   const byDataset = new Map<string, RegressionEvalCase[]>();
@@ -34,6 +45,7 @@ export default async function EvalsPage() {
       const judge = suite?.judge_prompt ?? cases[0]?.judge_prompt ?? "";
       return { name, suite, cases, judge };
     })
+    .filter((g) => phoenixNames === null || phoenixNames.has(g.name))
     .sort((a, b) => b.cases.length - a.cases.length);
 
   return (
