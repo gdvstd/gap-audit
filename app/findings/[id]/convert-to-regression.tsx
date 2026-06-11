@@ -69,7 +69,7 @@ export function ConvertToRegression({
     setLoading(true);
     setError(null);
     try {
-      const dataset_name = target === "existing" ? datasetExisting : datasetNew.trim();
+      const dataset_name = target === "existing" ? datasetExisting : (datasetNew.trim() || "regression-" + slug(failureMode));
       const res = await fetch(`/api/findings/${findingId}/convert-to-eval`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -135,7 +135,7 @@ export function ConvertToRegression({
                 {suites.map((s) => <option key={s.dataset_name} value={s.dataset_name}>{s.dataset_name}</option>)}
               </select>
               <label className="flex items-center gap-1">
-                <input type="radio" checked={target === "new"} onChange={() => setTarget("new")} /> New dataset
+                <input type="radio" checked={target === "new"} onChange={() => { setTarget("new"); if (datasetNew.trim() === "") setDatasetNew("regression-" + slug(failureMode)); }} /> New dataset
               </label>
               <input disabled={target !== "new"} value={datasetNew} onChange={(e) => setDatasetNew(e.target.value)}
                 placeholder="regression-…" className="text-sm border border-zinc-300 rounded px-2 py-1 disabled:opacity-40" />
@@ -165,7 +165,7 @@ export function ConvertToRegression({
                 A new dataset needs its own judge. Gemini will generate the judge prompt + reference output from this finding.
               </p>
               {error && <p className="text-sm text-rose-700">{error}</p>}
-              <button type="button" onClick={submit} disabled={loading || datasetNew.trim() === ""}
+              <button type="button" onClick={submit} disabled={loading}
                 className="text-sm px-3 py-1.5 rounded bg-violet-700 text-white hover:bg-violet-800 disabled:opacity-40">
                 {loading ? "Generating evaluation dataset…" : "Generate evaluation dataset"}
               </button>
