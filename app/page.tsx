@@ -59,12 +59,7 @@ export default async function OverviewPage() {
   const topFindings = [...findings].sort(sortFindings).slice(0, 5);
   const topClusters = [...clusters].sort((a, b) => b.finding_count - a.finding_count).slice(0, 4);
 
-  const Stat = ({ label, value, accent }: { label: string; value: string | number; accent?: boolean }) => (
-    <div>
-      <div className={"text-2xl font-semibold tracking-tight " + (accent ? "text-rose-600" : "text-zinc-950")}>{value}</div>
-      <div className="text-xs text-zinc-500 mt-0.5">{label}</div>
-    </div>
-  );
+  const cellCls = "lg:border-l lg:border-zinc-100 lg:pl-5 lg:first:border-l-0 lg:first:pl-0";
 
   return (
     <div className="space-y-6">
@@ -79,19 +74,20 @@ export default async function OverviewPage() {
           </span>
         </div>
 
-        {/* metric strip under the title */}
-        <div className="mt-6 flex flex-wrap items-start gap-x-10 gap-y-5">
-          <div>
-            <div className="text-4xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
-            <div className="text-xs text-zinc-500 mt-1 leading-4">traces containing<br />silent failures · {failRate}%</div>
+        {/* metric strip under the title — balanced 5-up */}
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-6">
+          <div className={cellCls}>
+            <div className="text-3xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
+            <div className="text-xs text-zinc-500 mt-1 leading-4">traces containing silent failures · {failRate}%</div>
           </div>
-
-          <Stat label="traces audited" value={artifacts.length} />
-
-          <div>
-            <div className="text-2xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
-            <div className="text-xs text-zinc-500 mt-0.5">silent failures</div>
-            <div className="mt-2 w-44">
+          <div className={cellCls}>
+            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{artifacts.length}</div>
+            <div className="text-xs text-zinc-500 mt-1">traces audited</div>
+          </div>
+          <div className={cellCls}>
+            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
+            <div className="text-xs text-zinc-500 mt-1">silent failures</div>
+            <div className="mt-2">
               <div className="flex h-2 w-full overflow-hidden rounded bg-zinc-100">
                 {(["critical", "high", "medium", "low"] as Severity[]).map((s) =>
                   sev[s] > 0 ? <div key={s} className={SEV_BAR[s]} style={{ width: percent(sev[s], findings.length) + "%" }} /> : null
@@ -106,9 +102,14 @@ export default async function OverviewPage() {
               </div>
             </div>
           </div>
-
-          <Stat label="recurring patterns" value={clusters.length} />
-          <Stat label="regression tests" value={evalCases.length} />
+          <div className={cellCls}>
+            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{clusters.length}</div>
+            <div className="text-xs text-zinc-500 mt-1">recurring patterns</div>
+          </div>
+          <div className={cellCls}>
+            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{evalCases.length}</div>
+            <div className="text-xs text-zinc-500 mt-1">regression tests</div>
+          </div>
         </div>
       </section>
 
