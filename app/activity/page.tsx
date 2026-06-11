@@ -13,6 +13,8 @@ function fmtTime(iso?: string): string {
   return m + " UTC";
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ActivityPage() {
   const memory = await getMemory();
   const all = await memory.listFindings();

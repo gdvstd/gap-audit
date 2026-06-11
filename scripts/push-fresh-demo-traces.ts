@@ -54,8 +54,23 @@ function toRunResult(t: RawTrace): RunResult {
 
 async function main(): Promise<void> {
   const all = JSON.parse(readFileSync(join(process.cwd(), "fixtures", "live-traces", "raw-traces.json"), "utf8")) as RawTrace[];
-  const exporter = createArizeExporter();
 
+  // 0. Reset audit state: delete any findings / no_findings for the targets so they read
+  //    as un-audited again (idempotent — safe to run before every take).
+  const uri = process.env["MONGODB_URI"];
+  if (uri) {
+    const { MongoClient } = await import("mongodb");
+    const client = new MongoClient(uri);
+    await client.connect();
+    const db = client.db(process.env["MONGODB_DATABASE"] ?? "silentops");
+    const df = await db.collection("findings").deleteMany({ task_id: { $in: TARGETS } });
+    let dnf = { deletedCount: 0 };
+    try { dnf = await db.collection("no_findings").deleteMany({ task_id: { $in: TARGETS } }); } catch { /* collection may not exist */ }
+    console.log(`  [reset] deleted ${df.deletedCount} finding(s) + ${dnf.deletedCount} no_findings marker(s) for the 3 targets`);
+    await client.close();
+  }
+
+  const exporter = createArizeExporter();
   const newIds: Record<string, string> = {};
   for (const taskId of TARGETS) {
     const raw = all.find((t) => t.trace_id === taskId);
@@ -67,7 +82,6 @@ async function main(): Promise<void> {
   }
 
   // Point each artifact's deep-link at the fresh trace.
-  const uri = process.env["MONGODB_URI"];
   if (uri && Object.keys(newIds).length > 0) {
     const { MongoClient } = await import("mongodb");
     const client = new MongoClient(uri);

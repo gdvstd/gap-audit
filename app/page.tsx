@@ -23,6 +23,9 @@ function sortFindings(a: AuditFinding, b: AuditFinding): number {
   return d !== 0 ? d : b.confidence - a.confidence;
 }
 
+// Always read live data (MongoDB/Phoenix) — never serve a build-time snapshot.
+export const dynamic = "force-dynamic";
+
 export default async function OverviewPage() {
   const memory = await getMemory();
   const [artifacts, findings, clusters, evalCases] = await Promise.all([

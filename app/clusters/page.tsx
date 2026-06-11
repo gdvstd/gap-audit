@@ -20,6 +20,8 @@ function trendToStatus(trend: Trend): TrendStatus {
   return "disabled";
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ClustersPage() {
   const memory = await getMemory();
   const clusters = await memory.listClusters();

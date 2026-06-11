@@ -12,6 +12,8 @@ function phoenixDatasetUrl(datasetId: string | undefined): string | undefined {
   return `${base}/datasets/${datasetId}/examples`;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function EvalsPage() {
   const memory = await getMemory();
   const [evalCases, suites] = await Promise.all([memory.listEvalCases(), listRegressionSuites()]);
