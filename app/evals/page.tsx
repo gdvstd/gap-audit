@@ -1,73 +1,114 @@
 import Link from "next/link";
 import { getMemory } from "@/lib/runtime/container";
+import { listRegressionSuites } from "@/lib/review/regression-suites";
+import type { RegressionEvalCase } from "@/lib/contracts/regression-eval-case";
+
+function phoenixDatasetUrl(datasetId: string | undefined): string | undefined {
+  if (datasetId === undefined || datasetId === "") return undefined;
+  const collector = process.env["PHOENIX_COLLECTOR_ENDPOINT"] ?? "";
+  const base = collector !== "" ? collector.replace(/\/v1\/traces\/?$/, "") : process.env["PHOENIX_HOST"] ?? "";
+  if (base === "") return undefined;
+  return `${base}/datasets/${datasetId}/examples`;
+}
 
 export default async function EvalsPage() {
   const memory = await getMemory();
-  const evalCases = await memory.listEvalCases();
+  const [evalCases, suites] = await Promise.all([memory.listEvalCases(), listRegressionSuites()]);
 
-  const sorted = [...evalCases].sort((a, b) => b.created_at.localeCompare(a.created_at));
+  // Group test cases by their regression suite (Phoenix dataset).
+  const byDataset = new Map<string, RegressionEvalCase[]>();
+  for (const ec of evalCases) {
+    const key = ec.dataset_name ?? "(unassigned)";
+    const arr = byDataset.get(key) ?? [];
+    arr.push(ec);
+    byDataset.set(key, arr);
+  }
+  const suiteByName = new Map(suites.map((s) => [s.dataset_name, s]));
+
+  // One group per dataset that has either a suite or test cases.
+  const datasetNames = Array.from(new Set([...suites.map((s) => s.dataset_name), ...byDataset.keys()]));
+  const groups = datasetNames
+    .map((name) => {
+      const suite = suiteByName.get(name);
+      const cases = (byDataset.get(name) ?? []).sort((a, b) => b.created_at.localeCompare(a.created_at));
+      const judge = suite?.judge_prompt ?? cases[0]?.judge_prompt ?? "";
+      return { name, suite, cases, judge };
+    })
+    .sort((a, b) => b.cases.length - a.cases.length);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div>
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Regression candidates</p>
-        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Confirmed service gaps that should not recur</h1>
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Regression suites</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Tests that guard against confirmed failures recurring</h1>
         <p className="text-sm text-zinc-600 mt-2 max-w-3xl">
-          Review-approved findings can become regression cases for prompts, policies, and workflow changes.
+          Each suite is a Phoenix dataset that accumulates test cases plus one judge prompt that grades every run.
+          Reviewers add cases via &ldquo;Convert to regression test&rdquo; on a confirmed finding.
         </p>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-zinc-50">
-            <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 uppercase tracking-wide">
-              <th className="py-3 px-3">Eval ID</th>
-              <th className="py-3 px-3">Source Gap</th>
-              <th className="py-3 px-3">Agent</th>
-              <th className="py-3 px-3">Guarded Failure</th>
-              <th className="py-3 px-3">Expected Behavior</th>
-              <th className="py-3 px-3">Prohibited</th>
-              <th className="py-3 px-3">Privacy</th>
-              <th className="py-3 px-3">Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((evalCase) => {
-              const shortEvalId = evalCase.eval_id.slice(0, 8) + "...";
-              const shortFindingId = evalCase.source_finding_id.slice(0, 8) + "...";
-              const firstBehavior = evalCase.expected_behavior[0] ?? "-";
-              const behaviorLabel =
-                evalCase.expected_behavior.length > 1
-                  ? firstBehavior + " (+" + (evalCase.expected_behavior.length - 1) + " more)"
-                  : firstBehavior;
+      {groups.length === 0 && (
+        <div className="bg-white border border-zinc-200 rounded-lg py-10 text-center text-zinc-400 text-sm">
+          No regression suites yet. Confirm a finding, then convert it to a regression test.
+        </div>
+      )}
 
-              return (
-                <tr key={evalCase.eval_id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                  <td className="py-3 px-3 font-mono text-xs text-zinc-600">{shortEvalId}</td>
-                  <td className="py-3 px-3">
-                    <Link href={"/findings/" + evalCase.source_finding_id} className="font-mono text-xs text-blue-700 hover:underline">
-                      {shortFindingId}
-                    </Link>
-                  </td>
-                  <td className="py-3 px-3 text-zinc-500 text-xs">{evalCase.agent_id}</td>
-                  <td className="py-3 px-3 text-zinc-700">{evalCase.failure_mode_guarded}</td>
-                  <td className="py-3 px-3 text-zinc-600 max-w-xs truncate">{behaviorLabel}</td>
-                  <td className="py-3 px-3 text-zinc-500">{evalCase.prohibited_patterns?.length ?? 0}</td>
-                  <td className="py-3 px-3 text-zinc-500">{evalCase.privacy_constraints?.length ?? 0}</td>
-                  <td className="py-3 px-3 text-zinc-400 text-xs">{new Date(evalCase.created_at).toLocaleDateString()}</td>
+      {groups.map((g) => {
+        const url = phoenixDatasetUrl(g.suite?.phoenix_dataset_id);
+        return (
+          <section key={g.name} className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
+            <div className="p-4 border-b border-zinc-100">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-sm font-semibold text-zinc-900">{g.name}</span>
+                {g.suite?.failure_mode && (
+                  <span className="inline-flex px-2 py-0.5 rounded border border-rose-200 bg-rose-50 text-rose-700 text-xs font-medium">guards: {g.suite.failure_mode}</span>
+                )}
+                <span className="text-xs text-zinc-500">{g.cases.length} test case{g.cases.length === 1 ? "" : "s"}</span>
+                {url && (
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1 rounded border border-violet-300 bg-violet-50 px-2 py-0.5 text-xs font-medium text-violet-700 hover:border-violet-500">
+                    Open dataset in Arize Phoenix ↗
+                  </a>
+                )}
+              </div>
+              <div className="mt-3 rounded border border-amber-200 bg-amber-50 p-3">
+                <p className="text-xs uppercase tracking-wide text-amber-700">Judge prompt (grades every case in this suite)</p>
+                <p className="mt-1 text-sm leading-5 text-amber-950 whitespace-pre-wrap">{g.judge || "—"}</p>
+              </div>
+            </div>
+
+            <table className="w-full text-sm">
+              <thead className="bg-zinc-50">
+                <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 uppercase tracking-wide">
+                  <th className="py-2 px-4">Test input (scenario)</th>
+                  <th className="py-2 px-4">Expected (PASS)</th>
+                  <th className="py-2 px-4">Prohibited (FAIL)</th>
+                  <th className="py-2 px-4">Source gap</th>
                 </tr>
-              );
-            })}
-            {sorted.length === 0 && (
-              <tr>
-                <td colSpan={8} className="py-10 text-center text-zinc-400 text-sm">
-                  No regression candidates yet. Confirm a service gap first.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {g.cases.map((ec) => (
+                  <tr key={ec.eval_id} className="border-b border-zinc-100 hover:bg-zinc-50 align-top">
+                    <td className="py-3 px-4 text-zinc-800 max-w-xs leading-5">{ec.input}</td>
+                    <td className="py-3 px-4 text-zinc-600 max-w-xs">
+                      <ul className="list-disc pl-4 space-y-1">{ec.expected_behavior.map((b, i) => <li key={i}>{b}</li>)}</ul>
+                    </td>
+                    <td className="py-3 px-4 text-zinc-600 max-w-xs">
+                      <ul className="list-disc pl-4 space-y-1">{(ec.prohibited_patterns ?? []).map((p, i) => <li key={i}>{p}</li>)}</ul>
+                    </td>
+                    <td className="py-3 px-4">
+                      <Link href={"/findings/" + ec.source_finding_id} className="font-mono text-xs text-blue-700 hover:underline">{ec.source_finding_id.slice(0, 8)}…</Link>
+                      <div className="text-xs text-zinc-400">{ec.agent_id}</div>
+                    </td>
+                  </tr>
+                ))}
+                {g.cases.length === 0 && (
+                  <tr><td colSpan={4} className="py-6 text-center text-zinc-400 text-sm">Suite created — no test cases yet.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </section>
+        );
+      })}
     </div>
   );
 }
