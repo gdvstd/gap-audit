@@ -17,11 +17,13 @@ Task completion is a system status. Service success is a customer outcome. GapAu
 
 ## What It Is
 
-GapAudit is a post-hoc service experience audit layer for AI support and operations agents.
+GapAudit is an autonomous auditor for customer-facing AI agents, built as a **Google ADK agent powered by Gemini** and connected to its data sources entirely through **MCP**. On a regular cadence it reads accumulated agent traces from **Arize Phoenix** and judges each interaction across five service-quality lenses to surface hidden service gaps: cases where the system recorded success while the customer or downstream operator experienced frustration, repeat contact, escalation pressure, unresolved work, or trust loss.
 
-It ingests traces from agent runs, maps them into service audit artifacts, and uses a Gemini-powered audit agent to surface hidden service gaps: cases where the system recorded success while the customer or downstream operator experienced frustration, repeat contact, escalation pressure, unresolved work, or trust loss.
+For every finding, it infers from the trace alone what the agent should have produced, why the behavior hurts the customer, and the exact spans that prove it. Findings accumulate as history in **MongoDB**, and the agent queries that history to check whether a behavior repeats across time, customers, and incidents — red-flagging recurring failures with higher severity. This turns one-off mistakes into systemic-risk signals: the hidden bad habits of your agents.
 
-GapAudit combines three kinds of evidence:
+Findings and patterns land in a human review dashboard where a reviewer confirms or dismisses them, then converts a confirmed failure into a regression test that is pushed straight back into Phoenix. GapAudit closes a **detect → review → develop → prevent** loop, so the same frustration can't ship twice.
+
+The audit agent reasons over three kinds of evidence in each trace:
 
 - **Conversation signals**: human requests, frustration, repeated information, "already tried", self-service loops, negative feedback.
 - **Operational signals**: resolved status, failed tools, missing verification, handoff quality, irreversible external actions, repeated guardrail events.
@@ -80,7 +82,9 @@ AI agent run
        - convert-to-eval workflow
 ```
 
-The local app uses in-process adapters for seeded and direct-runtime mode. The production-oriented workflow can use Agent Builder plus partner MCP tools at the I/O boundaries: Phoenix for trace access and MongoDB for audit memory. The audit agent reasons over the service artifact and deterministic tool outputs, not over private hidden context.
+GapAudit runs as a **Google ADK agent powered by Gemini**, connected to its data sources entirely through **MCP**: the **Arize Phoenix MCP** server for trace access and the **MongoDB MCP** server for audit memory and recurrence queries. Instead of reviewing each trace in isolation, the agent queries historical findings and related traces through MongoDB MCP to investigate whether a behavior is a repeated pattern across customers and incidents — surfacing systemic risk, not one-off mistakes. The human review layer is a **Next.js dashboard deployed on Vercel**.
+
+The audit agent reasons only over the service artifact and deterministic tool outputs — inputs, outputs, tool calls, and execution history — never over private hidden context, keeping a clean separation between observation and judgment. For local exploration the app also ships in-process adapters (seeded demo and direct-runtime mode) so the dashboard runs with no external credentials.
 
 ## Service Audit Artifact
 
@@ -122,15 +126,15 @@ Legacy fields such as `user_input_summary`, `declared_goal`, and `final_output_s
 
 ## Audit Lenses
 
-GapAudit lenses are goal-driven auditor personas, not one-off regex checks.
+GapAudit judges every interaction across five service-quality lenses — goal-driven auditor personas, not one-off regex checks.
 
 | Lens | Core Question | Primary Evidence |
 | --- | --- | --- |
-| `resolved-but-not-served` | Did the agent mark the work complete while the actual customer or service goal remained unmet? | resolved status, failed tools, missing verification, contradictory outcome |
-| `customer-effort-inflation` | Did the agent increase customer effort through self-service loops, repeated questions, or poor handoff? | human requests, already-tried signals, repeat information, handoff quality |
-| `trust-damaging-service` | Did the interaction lower customer trust through opaque handling, retention, tone, or control gaps? | retention risk, sensitive context handling, negative feedback, disclosure/control gaps |
-| `context-neglect-gap` | Did the agent ignore available context, policy exceptions, user history, or tool evidence that mattered to service quality? | tool facts, policy evidence, customer history, final response mismatch |
-| `operational-drift` | Is this a recurring service failure pattern rather than a one-off issue? | finding history, similar findings, aggregate service outcomes, repeated guardrail or verification patterns |
+| **False Resolution** | Did the agent mark the work complete while the actual customer or service goal remained unmet? | resolved status, failed tools, missing verification, contradictory outcome |
+| **Customer Effort Inflation** | Did the agent increase customer effort through self-service loops, repeated questions, or poor handoff? | human requests, already-tried signals, repeat information, handoff quality |
+| **Trust-Damaging Handling** | Did the interaction lower customer trust through opaque handling, retention, tone, or control gaps? | retention risk, sensitive context handling, negative feedback, disclosure/control gaps |
+| **Ignored Context** | Did the agent ignore available context, policy exceptions, user history, or tool evidence that mattered to service quality? | tool facts, policy evidence, customer history, final response mismatch |
+| **Recurring Operational Drift** | Is this a recurring service failure pattern rather than a one-off issue? | finding history, similar findings, aggregate service outcomes, repeated guardrail or verification patterns |
 
 ## Tool Layer
 
