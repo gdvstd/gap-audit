@@ -242,12 +242,17 @@ describe("toRawTraceArtifact", () => {
       },
     });
     const artifact = toRawTraceArtifact(run);
-    expect(artifact.customer_input).toContain("onboarding was incomplete");
+    // Observed fields ARE recorded on the trace.
     expect(artifact.company_task).toBe("Determine refund eligibility.");
-    expect(artifact.customer_goal).toContain("refund exception");
     expect(artifact.final_response).toBe("Refund denied using standard window.");
     expect(artifact.conversation_signals).toContain("customer cites incomplete onboarding");
     expect(artifact.support_context?.["case_id"]).toBe("case-refund-001");
+    // customer_input / customer_goal are deliberately NOT recorded on the trace: a real
+    // agent trace only carries what was observed (input, task, output, spans). The customer's
+    // underlying goal is a JUDGMENT the audit agent derives (finding.expected_output), not
+    // trace data — see toRawTraceArtifact. Keeping them off-trace preserves that boundary.
+    expect(artifact.customer_input).toBeUndefined();
+    expect(artifact.customer_goal).toBeUndefined();
   });
 });
 
