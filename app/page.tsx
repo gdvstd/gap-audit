@@ -92,15 +92,15 @@ export default async function OverviewPage() {
             <div className="text-4xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
             <div className="text-sm text-zinc-700 mt-1.5">silent failures</div>
             <div className="mt-2">
-              <div className="flex h-2 w-full overflow-hidden rounded bg-zinc-100">
+              <div className="flex h-1.5 w-full overflow-hidden rounded bg-zinc-100">
                 {(["critical", "high", "medium", "low"] as Severity[]).map((s) =>
                   sev[s] > 0 ? <div key={s} className={SEV_BAR[s]} style={{ width: percent(sev[s], findings.length) + "%" }} /> : null
                 )}
               </div>
-              <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[10px] text-zinc-500">
-                {(["critical", "high", "medium", "low"] as Severity[]).map((s) => (
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] leading-none text-zinc-500">
+                {([["critical", "Crit"], ["high", "High"], ["medium", "Med"], ["low", "Low"]] as [Severity, string][]).map(([s, label]) => (
                   <span key={s} className="inline-flex items-center gap-1">
-                    <span className={"h-1.5 w-1.5 rounded-sm " + SEV_BAR[s]} />{s} {sev[s]}
+                    <span className={"h-1.5 w-1.5 rounded-sm " + SEV_BAR[s]} />{label} {sev[s]}
                   </span>
                 ))}
               </div>
