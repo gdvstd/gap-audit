@@ -10,6 +10,7 @@ function slug(s: string): string {
 }
 
 const READONLY = "mt-1 w-full text-sm border rounded p-2 bg-zinc-100 border-zinc-200 text-zinc-600";
+const EDITABLE = "mt-1 w-full text-sm border border-zinc-300 rounded p-2";
 
 export function ConvertToRegression({
   findingId,
@@ -25,8 +26,9 @@ export function ConvertToRegression({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ dataset: string; action: string; judge: string } | null>(null);
+  const [done, setDone] = useState<{ dataset: string; action: string } | null>(null);
 
   const [suites, setSuites] = useState<Suite[]>([]);
   const [target, setTarget] = useState<"existing" | "new">("new");
@@ -34,6 +36,7 @@ export function ConvertToRegression({
   const [datasetNew, setDatasetNew] = useState("");
   const [input, setInput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
+  const [judge, setJudge] = useState("");
 
   async function start() {
     setOpen(true);
@@ -62,6 +65,26 @@ export function ConvertToRegression({
     }
   }
 
+  // Optional helper: fill the judge + expected fields with a Gemini draft. Does NOT commit —
+  // the reviewer edits and then explicitly creates the test (human in the loop).
+  async function generateWithAI() {
+    setGenerating(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/findings/${findingId}/draft-eval?criteria=1`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "generate failed");
+      if (data.criteria) {
+        setJudge(data.criteria.judge_prompt ?? "");
+        setExpectedOutput(data.criteria.expected_output ?? "");
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setGenerating(false);
+    }
+  }
+
   const selectedSuite = suites.find((s) => s.dataset_name === datasetExisting);
   const inheritedJudge = selectedSuite?.judge_prompt ?? "";
 
@@ -73,12 +96,11 @@ export function ConvertToRegression({
       const res = await fetch(`/api/findings/${findingId}/convert-to-eval`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        // For a NEW dataset the server generates the judge + reference output with Gemini.
-        body: JSON.stringify({ input, expected_output: expectedOutput, target, dataset_name, judge_prompt: target === "existing" ? inheritedJudge : "" }),
+        body: JSON.stringify({ input, expected_output: expectedOutput, target, dataset_name, judge_prompt: target === "existing" ? inheritedJudge : judge }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "convert failed");
-      setDone({ dataset: data.dataset_name, action: data.action, judge: data.eval_case?.judge_prompt ?? "" });
+      setDone({ dataset: data.dataset_name, action: data.action });
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -107,15 +129,9 @@ export function ConvertToRegression({
       </div>
 
       {done ? (
-        <div className="text-sm text-emerald-700 space-y-2">
-          <p>Added to &ldquo;{done.dataset}&rdquo; in Phoenix ({done.action}). <a href="/evals" className="underline">View in Regressions →</a></p>
-          {done.action === "create" && done.judge && (
-            <div className="rounded border border-zinc-200 bg-white p-2 text-zinc-600">
-              <p className="text-[11px] uppercase tracking-wide text-zinc-400">Generated judge prompt</p>
-              <p className="mt-0.5 leading-5 whitespace-pre-wrap">{done.judge}</p>
-            </div>
-          )}
-        </div>
+        <p className="text-sm text-emerald-700">
+          Added to &ldquo;{done.dataset}&rdquo; in Phoenix ({done.action}). <a href="/evals" className="underline">View in Regressions →</a>
+        </p>
       ) : (
         <>
           <label className="block">
@@ -150,8 +166,7 @@ export function ConvertToRegression({
               </label>
               <label className="block">
                 <span className="text-xs uppercase tracking-wide text-zinc-500">Expected output — optional, logged with the example (not used for grading)</span>
-                <textarea value={expectedOutput} onChange={(e) => setExpectedOutput(e.target.value)} rows={2}
-                  placeholder="Optional reference output…" className="mt-1 w-full text-sm border border-zinc-300 rounded p-2" />
+                <textarea value={expectedOutput} onChange={(e) => setExpectedOutput(e.target.value)} rows={2} placeholder="Optional reference output…" className={EDITABLE} />
               </label>
               {error && <p className="text-sm text-rose-700">{error}</p>}
               <button type="button" onClick={submit} disabled={loading}
@@ -161,13 +176,25 @@ export function ConvertToRegression({
             </>
           ) : (
             <>
-              <p className="text-xs text-zinc-500 leading-5">
-                A new dataset needs its own judge. Gemini will generate the judge prompt + reference output from this finding.
-              </p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-wide text-zinc-500">Evaluation criteria — fill in, or</span>
+                <button type="button" onClick={generateWithAI} disabled={generating}
+                  className="text-xs px-2 py-1 rounded border border-violet-300 bg-violet-50 text-violet-700 hover:border-violet-500 disabled:opacity-40">
+                  {generating ? "Generating…" : "✦ Generate with AI"}
+                </button>
+              </div>
+              <label className="block">
+                <span className="text-xs uppercase tracking-wide text-zinc-500">Judge prompt — how a future run is graded PASS/FAIL</span>
+                <textarea value={judge} onChange={(e) => setJudge(e.target.value)} rows={4} placeholder="PASS if … / FAIL if …" className={EDITABLE} />
+              </label>
+              <label className="block">
+                <span className="text-xs uppercase tracking-wide text-zinc-500">Expected output — optional, logged with the example (not used for grading)</span>
+                <textarea value={expectedOutput} onChange={(e) => setExpectedOutput(e.target.value)} rows={2} placeholder="Optional reference output…" className={EDITABLE} />
+              </label>
               {error && <p className="text-sm text-rose-700">{error}</p>}
-              <button type="button" onClick={submit} disabled={loading}
-                className="text-sm px-3 py-1.5 rounded bg-violet-700 text-white hover:bg-violet-800 disabled:opacity-40">
-                {loading ? "Generating evaluation dataset…" : "Generate evaluation dataset"}
+              <button type="button" onClick={submit} disabled={loading || judge.trim() === ""}
+                className="text-sm px-3 py-1.5 rounded bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-40">
+                {loading ? "Creating…" : "Create regression test"}
               </button>
             </>
           )}

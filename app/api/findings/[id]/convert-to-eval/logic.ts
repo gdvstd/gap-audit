@@ -3,7 +3,6 @@ import type { AuditMemoryAdapter } from "@/lib/audit-memory/adapter";
 import type { RegressionEvalCase, RegressionSuite } from "@/lib/contracts/regression-eval-case";
 import { pushDatasetExample } from "@/lib/integrations/phoenix-datasets";
 import { getRegressionSuite, upsertRegressionSuite, bumpSuiteExampleCount } from "@/lib/review/regression-suites";
-import { draftCriteria } from "@/lib/eval-generator/draft";
 
 type Body = {
   input?: unknown;
@@ -37,11 +36,11 @@ export async function postConvertToEval(
   if (input === "") return { ok: false, status: 400, error: "input (test scenario) is required" };
   if (datasetName === "") return { ok: false, status: 400, error: "dataset_name is required" };
 
-  let expectedOutput = typeof body.expected_output === "string" ? body.expected_output.trim() : "";
+  const expectedOutput = typeof body.expected_output === "string" ? body.expected_output.trim() : "";
 
   // Resolve the suite + its judge prompt. Existing suites OWN the judge (inherited,
-  // read-only on the case); a NEW suite generates its judge + reference output with Gemini
-  // server-side (the "Generate evaluation dataset" action).
+  // read-only on the case); a NEW suite takes the judge prompt the reviewer filled in (by
+  // hand or via the optional "Generate with AI" helper) — the human always commits it.
   let action: "create" | "append";
   let judgePrompt: string;
   const nowIso = new Date().toISOString();
@@ -53,12 +52,7 @@ export async function postConvertToEval(
     judgePrompt = suite.judge_prompt;
   } else {
     judgePrompt = typeof body.judge_prompt === "string" ? body.judge_prompt.trim() : "";
-    if (judgePrompt === "" || expectedOutput === "") {
-      const artifact = await memory.getArtifact(finding.task_id);
-      const { criteria } = await draftCriteria(finding, artifact);
-      if (judgePrompt === "") judgePrompt = criteria.judge_prompt;
-      if (expectedOutput === "") expectedOutput = criteria.expected_output;
-    }
+    if (judgePrompt === "") return { ok: false, status: 400, error: "judge prompt is required — fill it in or use Generate with AI" };
     action = "create";
     const suite: RegressionSuite = {
       dataset_name: datasetName,
