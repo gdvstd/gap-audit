@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMemory } from "@/lib/runtime/container";
 import { getFindingDetail } from "@/app/api/findings/[id]/logic";
 import { SeverityBadge } from "@/app/_components/severity-badge";
 import { StatusPill } from "@/app/_components/status-pill";
-import { agentLabel, compactEvidence, humanizePatternName, lensMeta } from "@/app/_components/gap-audit-copy";
+import { agentLabel, humanizePatternName, lensMeta } from "@/app/_components/gap-audit-copy";
 import { confirmAction, dismissAction } from "./actions";
 import { ConvertToRegression } from "./convert-to-regression";
+import { TraceReplay, IOProblemTriplet, getPhoenixTraceUrl } from "@/app/_components/trace-flow";
 
 type PageParams = Promise<{ id: string }>;
 
@@ -14,28 +14,26 @@ export default async function FindingDetailPage({ params }: { params: PageParams
   const { id } = await params;
   const memory = await getMemory();
   const result = await getFindingDetail(memory, id);
+  if (!result.ok) notFound();
 
-  if (!result.ok) {
-    notFound();
-  }
-
-  const { finding, decisions, cluster, artifact, evalCase } = result.value;
+  const { finding, decisions, cluster, artifact } = result.value;
   const meta = lensMeta(finding.lens);
 
-  const isConfirmed = decisions.some((decision) => decision.decision === "confirmed");
-  const isDismissed = decisions.some((decision) => decision.decision === "dismissed");
-
+  const isConfirmed = decisions.some((d) => d.decision === "confirmed");
+  const isDismissed = decisions.some((d) => d.decision === "dismissed");
   let statusValue: "confirmed" | "dismissed" | "converted" | "pending" = "pending";
   if (finding.converted_to_eval) statusValue = "converted";
   else if (isConfirmed) statusValue = "confirmed";
   else if (isDismissed) statusValue = "dismissed";
 
-  const customerGoal = artifact?.customer_goal ?? artifact?.declared_goal ?? artifact?.user_input_summary;
-  const companyTask = artifact?.company_task ?? artifact?.declared_goal;
-  const finalResponse = artifact?.final_output_summary;
+  const input = artifact?.user_input_summary ?? artifact?.customer_input_summary ?? artifact?.declared_goal ?? "Not captured in this trace.";
+  const expected = artifact?.customer_goal ?? artifact?.declared_goal ?? "Not captured in this trace.";
+  const actual = artifact?.final_response_summary ?? artifact?.final_output_summary ?? "Not captured in this trace.";
+  const phoenixUrl = artifact !== undefined ? getPhoenixTraceUrl(artifact) : undefined;
 
   return (
     <div className="space-y-6 max-w-5xl">
+      {/* Header */}
       <section className="bg-white border border-zinc-200 rounded-lg p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -45,7 +43,6 @@ export default async function FindingDetailPage({ params }: { params: PageParams
               <StatusPill status={statusValue} />
             </div>
             <h1 className="text-2xl font-semibold text-zinc-950 mt-3">{finding.failure_mode}</h1>
-            <p className="text-sm text-zinc-600 mt-2 max-w-3xl leading-6">{meta.problem}</p>
           </div>
           <div className="text-sm text-zinc-500 lg:text-right">
             <div>{agentLabel(finding.agent_id)}</div>
@@ -55,6 +52,35 @@ export default async function FindingDetailPage({ params }: { params: PageParams
         </div>
       </section>
 
+      {/* Input → Expected output → Problem triplet */}
+      <section className="bg-white border border-zinc-200 rounded-lg p-5">
+        <IOProblemTriplet input={input} expected={expected} actual={actual} problemLabel={meta.label} problemText={meta.problem} />
+      </section>
+
+      {/* Expandable trace replay + Phoenix link */}
+      {artifact !== undefined && (
+        <section className="bg-white border border-zinc-200 rounded-lg p-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Trace</p>
+            {phoenixUrl !== undefined && (
+              <a href={phoenixUrl} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 self-start rounded border border-violet-300 bg-violet-50 px-2 py-0.5 text-xs font-medium text-violet-700 hover:border-violet-500">
+                open original trace in Arize Phoenix ↗
+              </a>
+            )}
+          </div>
+          <details className="mt-3 group">
+            <summary className="cursor-pointer text-sm font-medium text-zinc-900 hover:text-blue-700">
+              Trace replay — what happened step by step <span className="text-xs font-normal text-zinc-500">(flagged steps = this finding&apos;s evidence)</span>
+            </summary>
+            <div className="mt-4 border-t border-zinc-100 pt-4">
+              <TraceReplay artifact={artifact} findings={[finding]} />
+            </div>
+          </details>
+        </section>
+      )}
+
+      {/* Why this is a service problem + recommended fix */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white border border-zinc-200 rounded-lg p-5">
           <p className="text-xs text-zinc-500 uppercase tracking-wide">Why this is a service problem</p>
@@ -85,67 +111,23 @@ export default async function FindingDetailPage({ params }: { params: PageParams
         </div>
       </section>
 
-      {artifact !== undefined && (
-        <section className="bg-white border border-zinc-200 rounded-lg p-5">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <p className="text-xs text-zinc-500 uppercase tracking-wide">Trace outcome context</p>
-            <Link href={"/traces/" + finding.task_id} className="text-sm font-medium text-blue-700 hover:text-blue-900">
-              Read full trace artifact
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div>
-              <p className="text-xs text-zinc-500">Customer wanted</p>
-              <p className="text-sm text-zinc-800 mt-1 leading-6">{customerGoal}</p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Company task</p>
-              <p className="text-sm text-zinc-800 mt-1 leading-6">{companyTask}</p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Agent final response</p>
-              <p className="text-sm text-zinc-800 mt-1 leading-6">{finalResponse}</p>
-            </div>
-          </div>
-          <p className="text-xs text-zinc-500 mt-4">Audit summary: {compactEvidence(finding, 2)}</p>
-        </section>
-      )}
-
-      {evalCase !== undefined && (
-        <section className="bg-white border border-zinc-200 rounded-lg p-5">
-          <p className="text-xs text-zinc-500 uppercase tracking-wide">Generated regression candidate</p>
-          <p className="text-xs text-zinc-600 font-mono mt-2">{evalCase.eval_id}</p>
-          <p className="text-sm text-zinc-700 mt-1">{evalCase.failure_mode_guarded}</p>
-        </section>
-      )}
-
+      {/* Review actions */}
       <section className="bg-white border border-zinc-200 rounded-lg p-5">
         <p className="text-xs text-zinc-500 uppercase tracking-wide mb-3">Review action</p>
         <div className="flex flex-wrap gap-3">
           <form action={async () => { "use server"; await confirmAction(finding.finding_id); }}>
-            <button
-              type="submit"
-              disabled={isConfirmed || finding.converted_to_eval}
-              className="text-sm px-3 py-1.5 rounded bg-emerald-700 text-white hover:bg-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button type="submit" disabled={isConfirmed || finding.converted_to_eval}
+              className="text-sm px-3 py-1.5 rounded bg-emerald-700 text-white hover:bg-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed">
               Confirm service gap
             </button>
           </form>
           <form action={async () => { "use server"; await dismissAction(finding.finding_id); }}>
-            <button
-              type="submit"
-              disabled={isDismissed || finding.converted_to_eval}
-              className="text-sm px-3 py-1.5 rounded bg-zinc-700 text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button type="submit" disabled={isDismissed || finding.converted_to_eval}
+              className="text-sm px-3 py-1.5 rounded bg-zinc-700 text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed">
               Dismiss
             </button>
           </form>
-          <ConvertToRegression
-            findingId={finding.finding_id}
-            confirmed={isConfirmed}
-            converted={finding.converted_to_eval}
-            failureMode={finding.failure_mode}
-          />
+          <ConvertToRegression findingId={finding.finding_id} confirmed={isConfirmed} converted={finding.converted_to_eval} failureMode={finding.failure_mode} />
         </div>
       </section>
     </div>
