@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getMemory } from "@/lib/runtime/container";
-import { listRegressionSuites } from "@/lib/review/regression-suites";
+import { listRegressionSuites, reconcileWithPhoenix } from "@/lib/review/regression-suites";
 import { listPhoenixDatasets } from "@/lib/integrations/phoenix-datasets";
 import type { RegressionEvalCase } from "@/lib/contracts/regression-eval-case";
 
@@ -23,7 +23,10 @@ export default async function EvalsPage() {
   // back to showing all (a transient error shouldn't hide every suite).
   let phoenixNames: Set<string> | null = null;
   try {
-    phoenixNames = new Set((await listPhoenixDatasets()).map((d) => d.name));
+    const ds = await listPhoenixDatasets();
+    phoenixNames = new Set(ds.map((d) => d.name));
+    // Force-sync: prune suites/eval_cases whose Phoenix dataset was deleted.
+    await reconcileWithPhoenix(ds.map((d) => d.name));
   } catch {
     phoenixNames = null;
   }
