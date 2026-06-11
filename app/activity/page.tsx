@@ -64,7 +64,9 @@ export default async function ActivityPage() {
                       {finding.failure_mode}
                     </Link>
                   </td>
-                  <td className="py-3 px-3 text-zinc-600 max-w-sm leading-5">{firstEvidence(finding)}</td>
+                  <td className="py-3 px-3">
+                    <div className="max-w-[18rem] break-words line-clamp-3 text-zinc-600 leading-5">{firstEvidence(finding)}</div>
+                  </td>
                   <td className="py-3 px-3 text-zinc-500 text-xs">
                     <div className="font-medium text-zinc-700">{agentLabel(finding.agent_id)}</div>
                     <Link href={"/traces/" + finding.task_id} className="text-blue-700 hover:text-blue-900">{finding.task_id}</Link>

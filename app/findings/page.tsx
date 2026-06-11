@@ -123,7 +123,9 @@ export default async function FindingsPage({ searchParams }: { searchParams: Sea
                     </Link>
                     <p className="text-xs text-zinc-500 mt-1">{finding.recommended_action}</p>
                   </td>
-                  <td className="py-3 px-3 text-zinc-600 max-w-sm leading-5">{firstEvidence(finding)}</td>
+                  <td className="py-3 px-3">
+                    <div className="max-w-[18rem] break-words line-clamp-3 text-zinc-600 leading-5">{firstEvidence(finding)}</div>
+                  </td>
                   <td className="py-3 px-3 text-zinc-500 text-xs">
                     <div className="font-medium text-zinc-700">{agentLabel(finding.agent_id)}</div>
                     <div>{finding.task_id}</div>
