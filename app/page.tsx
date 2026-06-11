@@ -66,9 +66,10 @@ export default async function OverviewPage() {
       {/* Hero: the thesis + the one number that matters */}
       <section className="border border-zinc-200 bg-white rounded-lg p-5 md:p-6">
         <div className="flex items-start justify-between gap-4">
-          <p className="text-sm text-zinc-400">
-            Audit the gaps behind your AI agents&apos; resolved work
-          </p>
+          <div>
+            <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-zinc-950">Service Map Dashboard</h1>
+            <p className="text-[15px] text-zinc-400 mt-1">Audit the gaps behind your AI agents&apos; resolved work</p>
+          </div>
           <span className="shrink-0 text-[11px] text-zinc-400">
             {status.storage_mode} · {status.arize === "enabled" ? "Phoenix" : "Phoenix offline"}
           </span>
@@ -77,8 +78,11 @@ export default async function OverviewPage() {
         {/* metric strip under the title — balanced 5-up */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-6">
           <div className={cellCls}>
-            <div className="text-4xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
-            <div className="text-sm text-zinc-700 mt-1.5 leading-4">traces containing silent failures · {failRate}%</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-semibold tracking-tight text-rose-600">{impacted.size}</span>
+              <span className="text-lg font-semibold tracking-tight text-rose-400">{failRate}%</span>
+            </div>
+            <div className="text-sm text-zinc-700 mt-1.5 leading-4">traces containing silent failures</div>
           </div>
           <div className={cellCls}>
             <div className="text-4xl font-semibold tracking-tight text-zinc-950">{artifacts.length}</div>
