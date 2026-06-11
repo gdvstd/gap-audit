@@ -39,7 +39,8 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
   const relatedFindings = allFindings.filter((f) => f.task_id === artifact.task_id);
   const mainFinding = primaryFinding(relatedFindings);
   const meta = mainFinding !== undefined ? lensMeta(mainFinding.lens) : undefined;
-  const secondary = relatedFindings.filter((f) => mainFinding === undefined || f.finding_id !== mainFinding.finding_id);
+  const sevRank: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
+  const sortedFindings = [...relatedFindings].sort((a, b) => ((sevRank[b.severity] ?? 0) - (sevRank[a.severity] ?? 0)) || (b.confidence - a.confidence));
 
   const inputSummary = artifact.user_input_summary ?? artifact.customer_input_summary ?? artifact.declared_goal;
   const rawInput = getRawInput(artifact);
@@ -120,22 +121,38 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
               </div>
             )}
 
-            {secondary.length > 0 && (
-              <details className="mt-4 rounded border border-zinc-200 bg-zinc-50">
-                <summary className="cursor-pointer px-3 py-2 text-sm font-medium text-zinc-700">Other findings on this trace ({secondary.length})</summary>
-                <div className="space-y-2 border-t border-zinc-200 bg-white p-3">
-                  {secondary.map((item) => (
-                    <Link key={item.finding_id} href={"/findings/" + item.finding_id} className="block rounded border border-zinc-200 p-3 hover:border-zinc-400">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <SeverityBadge severity={item.severity} />
-                        <span className="text-xs text-zinc-500">{lensMeta(item.lens).label}</span>
+          </section>
+
+          {/* All findings on this trace — listed top to bottom, each collapsible */}
+          <section className="rounded-lg border border-zinc-200 bg-white p-5">
+            <p className="text-sm font-semibold text-zinc-900">Findings <span className="font-normal text-zinc-500">({relatedFindings.length})</span></p>
+            <div className="mt-3 space-y-2">
+              {sortedFindings.map((f) => {
+                const fmeta = lensMeta(f.lens);
+                return (
+                  <details key={f.finding_id} className="rounded border border-zinc-200 bg-white">
+                    <summary className="flex cursor-pointer flex-wrap items-center gap-2 px-3 py-2 hover:bg-zinc-50">
+                      <SeverityBadge severity={f.severity} />
+                      <span className={"inline-flex rounded border px-1.5 py-0.5 text-[11px] font-medium " + fmeta.borderClass + " " + fmeta.bgClass + " " + fmeta.textClass}>{fmeta.label}</span>
+                      <span className="text-sm font-medium text-zinc-900">{f.failure_mode}</span>
+                    </summary>
+                    <div className="space-y-3 border-t border-zinc-100 px-3 py-3">
+                      <p className="text-sm leading-6 text-zinc-700">{fmeta.customerSignal}</p>
+                      <ul className="space-y-1">
+                        {f.evidence.map((e, i) => (
+                          <li key={i} className="flex gap-2 text-sm leading-6 text-zinc-700"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" /><span>{e}</span></li>
+                        ))}
+                      </ul>
+                      <div className="rounded border border-emerald-200 bg-emerald-50 p-3">
+                        <p className="text-xs uppercase tracking-wide text-emerald-700">Recommended fix</p>
+                        <p className="mt-1 text-sm leading-6 text-emerald-950">{f.recommended_action || fmeta.defaultAction}</p>
                       </div>
-                      <p className="mt-1 text-sm font-medium text-zinc-900">{item.failure_mode}</p>
-                    </Link>
-                  ))}
-                </div>
-              </details>
-            )}
+                      <Link href={"/findings/" + f.finding_id} className="inline-block text-sm font-medium text-blue-700 hover:text-blue-900">Open finding detail →</Link>
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
           </section>
 
           {/* Raw artifact + signals */}
