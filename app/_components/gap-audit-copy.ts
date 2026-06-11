@@ -103,6 +103,17 @@ export function agentLabel(agentId: string): string {
   return labels[agentId] ?? agentId;
 }
 
+// The audit agent's own identity (matches `name="GapAudit"` on the ADK agent). A finding
+// describes the ACTOR agent it audited — never the auditor. If a stale/mislabeled record
+// attributes a finding to the auditor (or has no agent at all), it must not render as a
+// phantom agent in the dashboard. Real actor agents are unaffected.
+const AUDITOR_IDENTITY = "GapAudit";
+
+export function isAttributableAgent(agentId: string): boolean {
+  const norm = agentId.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  return norm !== "" && norm !== AUDITOR_IDENTITY.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 export function humanizePatternName(patternName: string): string {
   const [mode, taskType] = patternName.split(":");
   const modeLabel = (mode ?? patternName)

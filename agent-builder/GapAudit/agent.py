@@ -143,6 +143,27 @@ def _compute_severity(lens: str, failure_mode: str, evidence) -> str:
     return _SEV[level]
 
 
+# The auditor's own identity (see `name=` on the LlmAgent below). A finding describes an
+# ACTOR agent's behavior, so its agent_id must NEVER be the auditor itself. The #1 observed
+# mislabel was the model stamping a finding's agent_id with "GapAudit", which then surfaced
+# as a phantom agent in the review dashboard. We reject it deterministically here so the
+# model can't reintroduce it, whatever it puts in the draft.
+AUDITOR_IDENTITY = "GapAudit"
+
+
+def _norm_id(value: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (value or "").strip().lower())
+
+
+def _sanitize_actor_id(agent_id: str) -> str:
+    """Return the actor agent_id, or "" if the draft tried to attribute the finding to the
+    auditor itself. Blanking is deliberate: an unattributed finding is recoverable on review,
+    a finding falsely attributed to a non-existent "GapAudit" agent is silent corruption."""
+    if _norm_id(agent_id) == _norm_id(AUDITOR_IDENTITY):
+        return ""
+    return (agent_id or "").strip()
+
+
 def prepare_findings(findings: list) -> dict:
     """Stamp each draft finding with a finding_id, timestamps, and defaults so the
     documents satisfy the SilentOps AuditFinding contract that the review dashboard
@@ -176,7 +197,7 @@ def prepare_findings(findings: list) -> dict:
         doc = {
             "finding_id": str(uuid.uuid4()),
             "task_id": str(f.get("task_id", "")),
-            "agent_id": str(f.get("agent_id", "")),
+            "agent_id": _sanitize_actor_id(str(f.get("agent_id", ""))),
             "lens": str(f.get("lens", "")),
             "failure_mode": str(f.get("failure_mode", "")),
             "severity": _compute_severity(str(f.get("lens", "")), str(f.get("failure_mode", "")), evidence),
@@ -338,7 +359,11 @@ STEP 2 — JUDGE. Your job is to catch SILENT FAILURES: tasks the agent marked
 
 STEP 3 — PERSIST (MongoDB MCP). Collect all judged findings as draft dicts with keys:
   task_id (= the trace's silentops.task_id from STEP 1, NEVER the Phoenix hex),
-  agent_id, lens, failure_mode, severity, confidence (0-1), evidence (list of
+  agent_id (= the ACTOR agent that produced the trace, read from the trace's resource
+    attributes in STEP 1 — e.g. "agent-support-01". This is the agent you are AUDITING.
+    It is NEVER "GapAudit" or your own name; a finding describes the actor's behavior,
+    not the auditor's. Same rule for the no_findings markers below.),
+  lens, failure_mode, severity, confidence (0-1), evidence (list of
   short strings), recommended_action, expected_output (your judgment of the correct
   output from STEP 2), human_review_required (bool). Then:
     (a) call the `prepare_findings` tool with your list of drafts — it returns

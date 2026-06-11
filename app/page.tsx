@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getMemory } from "@/lib/runtime/container";
 import { getAdapterStatus } from "@/lib/runtime/adapter-status";
 import { SeverityBadge } from "./_components/severity-badge";
-import { GAP_LENSES, agentLabel, compactEvidence, humanizePatternName, lensMeta } from "./_components/gap-audit-copy";
+import { GAP_LENSES, agentLabel, compactEvidence, humanizePatternName, lensMeta, isAttributableAgent } from "./_components/gap-audit-copy";
 import type { AuditFinding } from "@/lib/contracts/audit-finding";
 import type { Severity } from "@/lib/contracts/enums";
 
@@ -47,7 +47,9 @@ export default async function OverviewPage() {
     return { lens, count, share: percent(count, findings.length), width: Math.max(5, percent(count, maxLensCount)) };
   }).filter((r) => r.count > 0).sort((a, b) => b.count - a.count);
 
-  const agents = Array.from(new Set(artifacts.map((a) => a.agent_id).concat(findings.map((f) => f.agent_id)))).sort();
+  // Only real actor agents appear in the breakdown. A finding mislabeled with the auditor's
+  // own identity (or none) must not surface as a phantom agent — see isAttributableAgent.
+  const agents = Array.from(new Set(artifacts.map((a) => a.agent_id).concat(findings.map((f) => f.agent_id)))).filter(isAttributableAgent).sort();
   const agentRows = agents.map((agentId) => {
     const af = findings.filter((f) => f.agent_id === agentId);
     const aa = artifacts.filter((a) => a.agent_id === agentId);
