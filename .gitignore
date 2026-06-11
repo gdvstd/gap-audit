@@ -1,0 +1,31 @@
+.next/
+node_modules/
+coverage/
+dist/
+
+# Environment / secrets (never commit; .env.example is the template)
+.env
+.env.*
+!.env.example
+
+# Build / TS artifacts
+*.tsbuildinfo
+next-env.d.ts
+
+# Python (ADK agent) — local venv, caches, session db, transcripts
+**/.venv/
+**/__pycache__/
+**/.adk/
+agent-builder/**/transcripts/
+
+# OS / editor cruft
+.DS_Store
+*.log
+
+# Machine-local Claude config
+.claude/settings.local.json
+
+# Private project docs — kept local, NOT pushed to the public code repo
+CLAUDE.md
+AGENTS.md
+docs/

@@ -1,0 +1,389 @@
+[
+  {
+    "task_id": "trace-gap-refund-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "failure_mode": "Context Neglect",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Receive the enterprise onboarding refund exception or a justified escalation path.",
+      "lookup_account: plan: Enterprise; onboarding_status: incomplete; completed_steps: 3/7; signup_days_ago: 18; annual_value: $28,800",
+      "policy_search: Refund Policy v4. Standard refunds are available within 14 days. Enterprise customers with incomplete onboarding qualify for refund exception up to 30 days from account creation. Refunds over $500 require manager approval.",
+      "final_response_summary: Refund denied. Customer does not meet the standard 14-day refund window policy. Request closed."
+    ],
+    "recommended_action": "Require the agent to reconcile retrieved account and policy context before closing or denying the customer request. Route exception-qualified cases to a human approval path.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-refund-enterprise-002",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "failure_mode": "Context Neglect",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Reverse the duplicate charge or get an escalation path that honors the promised exception.",
+      "lookup_account: plan: Enterprise; renewal_status: duplicate_charge_detected; csm_note: billing exception promised; annual_value: $64,000",
+      "policy_search: Billing Policy v7. Duplicate renewal charges qualify for reversal when account notes confirm duplicate collection or CSM exception promise. Manager approval required over $1,000.",
+      "final_response_summary: Refund denied. Renewal charges are final and the ticket has been closed."
+    ],
+    "recommended_action": "Require the agent to reconcile retrieved account and policy context before closing or denying the customer request. Route exception-qualified cases to a human approval path.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-credit-sla-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "failure_mode": "Context Neglect",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Receive the service credit promised by the contract for export degradation.",
+      "lookup_account: plan: Enterprise; contract: export SLA credit applies after 4 business hours degraded export service; outage_duration: 2 days",
+      "policy_search: SLA Policy v3. Enterprise export degradation above four business hours qualifies for monthly service credit even when the platform is not fully down.",
+      "final_response_summary: No credit is available because the service was not fully down. Ticket resolved."
+    ],
+    "recommended_action": "Require the agent to reconcile retrieved account and policy context before closing or denying the customer request. Route exception-qualified cases to a human approval path.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-cancel-context-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "failure_mode": "Context Neglect",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Cancel the contract without repeating the failed integration process.",
+      "lookup_account: plan: Business; integration_attempts: 3 failed; prior_note: support promised cancellation review; renewal_days_left: 12",
+      "policy_search: Cancellation Policy v5. Three documented failed implementation attempts qualify for cancellation review without requiring another onboarding session.",
+      "final_response_summary: Cancellation cannot be processed. Please schedule another onboarding session."
+    ],
+    "recommended_action": "Require the agent to reconcile retrieved account and policy context before closing or denying the customer request. Route exception-qualified cases to a human approval path.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-info-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "failure_mode": "Customer Effort Inflation",
+    "severity": "high",
+    "confidence": 0.88,
+    "evidence": [
+      "conversation_signals: customer already provided details, customer asks not to repeat information, repeat contact",
+      "operational_signals: customer asked to repeat details, existing context not reused, resolved-looking reply sent",
+      "support_context: prior_contact_count=3, repeat_contact=true, escalation_requested=false",
+      "final_response_summary: Please resend your account ID, admin email, invoice number, and a screenshot before we can investigate."
+    ],
+    "recommended_action": "Preserve prior customer context, assign an owner or escalation path when repeat contact is detected, and block resolutions that ask the customer to repeat already-provided information.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-effort-self-service-loop-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "failure_mode": "Customer Effort Inflation",
+    "severity": "high",
+    "confidence": 0.88,
+    "evidence": [
+      "conversation_signals: access still blocked, already tried self service, human request",
+      "operational_signals: external reply sent, handoff not offered, self-service loop repeated",
+      "support_context: prior_contact_count=2, repeat_contact=true, escalation_requested=true",
+      "final_response_summary: Please try the same SSO reset guide again and reply if it still does not work."
+    ],
+    "recommended_action": "Preserve prior customer context, assign an owner or escalation path when repeat contact is detected, and block resolutions that ask the customer to repeat already-provided information.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-effort-handoff-no-summary-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "failure_mode": "Customer Effort Inflation",
+    "severity": "high",
+    "confidence": 0.88,
+    "evidence": [
+      "conversation_signals: already explained issue, customer requests escalation, repeat information",
+      "operational_signals: customer asked to repeat details, handoff without summary, transfer presented as resolution",
+      "support_context: prior_contact_count=2, repeat_contact=true, escalation_requested=true",
+      "final_response_summary: I am transferring you to another team. Please explain the export bug again when they join."
+    ],
+    "recommended_action": "Preserve prior customer context, assign an owner or escalation path when repeat contact is detected, and block resolutions that ask the customer to repeat already-provided information.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-contact-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "failure_mode": "Customer Effort Inflation",
+    "severity": "high",
+    "confidence": 0.88,
+    "evidence": [
+      "conversation_signals: customer asks for concrete next step, customer asks for owner, repeat contact",
+      "operational_signals: case marked resolved, follow-up pushed back to customer, no owner assigned",
+      "support_context: prior_contact_count=5, repeat_contact=true, escalation_requested=true",
+      "final_response_summary: Thanks for reaching out. Please monitor the webhook dashboard and contact us again if it fails."
+    ],
+    "recommended_action": "Preserve prior customer context, assign an owner or escalation path when repeat contact is detected, and block resolutions that ask the customer to repeat already-provided information.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-recruit-retention-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "trust-damaging-service",
+    "failure_mode": "Trust-Damaging Retention",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Be evaluated for the role without unnecessary long-term or shared retention of sensitive context.",
+      "long-term-candidate-memory: retention_risk=high sensitive_entity_types=phone_number,salary_expectation,full_name Written to long-term-candidate-memory: Strong senior backend candidate. Retain phone, salary expectation above midband, and availability notes for future screens.",
+      "eval-dataset-candidate-screening: retention_risk=critical sensitive_entity_types=phone_number,salary_expectation,full_name Written to eval-dataset-candidate-screening: Candidate screening example with fit summary, phone contact context, salary expectation, and scheduling notes.",
+      "final_response_summary: Candidate profile reviewed. Fit assessment: strong match. Salary expectation noted as above midband. Proceeding to technical screen."
+    ],
+    "recommended_action": "Block long-term/shared retention of sensitive candidate context unless a retention policy, purpose, and candidate-facing control are present.",
+    "human_review_required": true,
+    "detection_source": "agent"
+  },
+  {
+    "task_id": "trace-gap-recruit-eval-retention-002",
+    "agent_id": "agent-recruiting-01",
+    "lens": "trust-damaging-service",
+    "failure_mode": "Trust-Damaging Retention",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Be evaluated without personal constraints becoming shared eval data.",
+      "long-term-candidate-memory: retention_risk=high sensitive_entity_types=salary_expectation,location_constraint,availability_note Written to long-term-candidate-memory: Retain relocation constraint, compensation range, and scheduling constraints for future screens.",
+      "eval-dataset-candidate-screening: retention_risk=critical sensitive_entity_types=salary_expectation,location_constraint,availability_note Written to eval-dataset-candidate-screening: Screening example includes relocation constraint, compensation range, and private availability note.",
+      "final_response_summary: Candidate assessed as strong. Relocation and salary constraints stored for future model calibration."
+    ],
+    "recommended_action": "Block long-term/shared retention of sensitive candidate context unless a retention policy, purpose, and candidate-facing control are present.",
+    "human_review_required": true,
+    "detection_source": "agent"
+  },
+  {
+    "task_id": "trace-gap-recruit-offer-memory-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "trust-damaging-service",
+    "failure_mode": "Trust-Damaging Retention",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Have offer preferences considered without broad long-term retention of private constraints.",
+      "offer-negotiation-memory: retention_risk=high sensitive_entity_types=salary_expectation,family_status,availability_note Written to offer-negotiation-memory: Retain salary floor, competing offer deadline, and family scheduling constraints for negotiation strategy.",
+      "eval-dataset-offer-negotiation: retention_risk=critical sensitive_entity_types=salary_expectation,family_status,availability_note Written to eval-dataset-offer-negotiation: Offer negotiation example with salary floor, competing offer deadline, and family constraint.",
+      "final_response_summary: Offer-call notes saved. Salary floor and family scheduling constraints retained for future negotiation strategy."
+    ],
+    "recommended_action": "Block long-term/shared retention of sensitive candidate context unless a retention policy, purpose, and candidate-facing control are present.",
+    "human_review_required": true,
+    "detection_source": "agent"
+  },
+  {
+    "task_id": "trace-gap-recruit-shared-notes-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "trust-damaging-service",
+    "failure_mode": "Trust-Damaging Retention",
+    "severity": "high",
+    "confidence": 0.9,
+    "evidence": [
+      "customer_goal: Have accommodation respected without broad sharing beyond the recruiting need.",
+      "shared-hiring-panel-notes: retention_risk=critical sensitive_entity_types=accommodation_note,availability_note,full_name Written to shared-hiring-panel-notes: Retain accommodation context and constrained availability for panel prep.",
+      "final_response_summary: Hiring panel summary posted with accommodation and availability context retained in shared notes."
+    ],
+    "recommended_action": "Block long-term/shared retention of sensitive candidate context unless a retention policy, purpose, and candidate-facing control are present.",
+    "human_review_required": true,
+    "detection_source": "agent"
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "failure_mode": "Guardrail Friction",
+    "severity": "high",
+    "confidence": 0.86,
+    "evidence": [
+      "privacy-boundary blocked 23 attempt(s) over P7D for reason customer-identifier-in-external-reply",
+      "operational_signals: 23 blocked identifier-in-reply attempts over 7 days, same restricted action repeated",
+      "attempt_identifier_reply: {\"gate\":\"privacy-boundary\",\"reason\":\"customer-identifier-in-external-reply\",\"count\":23,\"time_window\":\"P7D\"}",
+      "final_response_summary: Account status communicated after removing the identifier from the external reply."
+    ],
+    "recommended_action": "Fix the reply-construction prompt and add a safe substitution layer before external replies reach the guardrail.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-002",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "failure_mode": "Guardrail Friction",
+    "severity": "high",
+    "confidence": 0.86,
+    "evidence": [
+      "privacy-boundary blocked 18 attempt(s) over P7D for reason customer-identifier-in-external-reply",
+      "operational_signals: 18 blocked identifier-in-reply attempts over 7 days, same restricted action repeated",
+      "attempt_identifier_reply: {\"gate\":\"privacy-boundary\",\"reason\":\"customer-identifier-in-external-reply\",\"count\":18,\"time_window\":\"P7D\"}",
+      "final_response_summary: Renewal status sent after removing the internal case identifier."
+    ],
+    "recommended_action": "Fix the reply-construction prompt and add a safe substitution layer before external replies reach the guardrail.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-003",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "failure_mode": "Guardrail Friction",
+    "severity": "high",
+    "confidence": 0.86,
+    "evidence": [
+      "privacy-boundary blocked 31 attempt(s) over P14D for reason customer-identifier-in-external-reply",
+      "operational_signals: 31 blocked identifier-in-reply attempts over 14 days, same restricted action repeated",
+      "attempt_identifier_reply: {\"gate\":\"privacy-boundary\",\"reason\":\"customer-identifier-in-external-reply\",\"count\":31,\"time_window\":\"P14D\"}",
+      "final_response_summary: Billing review status sent after removing the internal billing identifier."
+    ],
+    "recommended_action": "Fix the reply-construction prompt and add a safe substitution layer before external replies reach the guardrail.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-004",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "failure_mode": "Guardrail Friction",
+    "severity": "high",
+    "confidence": 0.86,
+    "evidence": [
+      "privacy-boundary blocked 12 attempt(s) over P3D for reason customer-identifier-in-external-reply",
+      "operational_signals: 12 blocked identifier-in-reply attempts over 3 days, same restricted action repeated",
+      "attempt_identifier_reply: {\"gate\":\"privacy-boundary\",\"reason\":\"customer-identifier-in-external-reply\",\"count\":12,\"time_window\":\"P3D\"}",
+      "final_response_summary: Import status sent after removing the raw internal job identifier."
+    ],
+    "recommended_action": "Fix the reply-construction prompt and add a safe substitution layer before external replies reach the guardrail.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-false-resolution-001",
+    "agent_id": "agent-devops-01",
+    "lens": "resolved-but-not-served",
+    "failure_mode": "False Success",
+    "severity": "high",
+    "confidence": 0.89,
+    "evidence": [
+      "agent_status: resolved",
+      "restart_service: payment-service restarted; 2/2 pods healthy",
+      "metric_recovery verification status=failed: error_rate 31% vs threshold 2% - still elevated; recovery unconfirmed",
+      "update_status: Incident status updated to: resolved"
+    ],
+    "recommended_action": "Require recovery verification to pass before incident status can be set to resolved. Treat restart success as an intermediate action rather than the customer outcome.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-false-resolution-001",
+    "agent_id": "agent-devops-01",
+    "lens": "operational-drift",
+    "failure_mode": "latent-false-success-drift",
+    "severity": "high",
+    "confidence": 0.85,
+    "evidence": [
+      "operational_signals: incident marked resolved, metric recovery failed, restart succeeded",
+      "metric_recovery verification status=failed: error_rate 31% vs threshold 2% - still elevated; recovery unconfirmed",
+      "final_response_summary: Service restarted successfully. Incident marked as resolved. No further action taken.",
+      "This trace is part of the generated false-resolution drift set for agent-devops-01."
+    ],
+    "recommended_action": "Escalate the incident workflow to enforce metric recovery at the status-update boundary and convert this cluster into a regression eval.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-latency-false-resolution-002",
+    "agent_id": "agent-devops-01",
+    "lens": "resolved-but-not-served",
+    "failure_mode": "False Success",
+    "severity": "high",
+    "confidence": 0.89,
+    "evidence": [
+      "agent_status: resolved",
+      "restart_service: search-api restarted; 2/2 pods healthy",
+      "metric_recovery verification status=failed: p95_latency 7.9s vs threshold 1.2s - still elevated; recovery unconfirmed",
+      "update_status: Incident status updated to: resolved"
+    ],
+    "recommended_action": "Require recovery verification to pass before incident status can be set to resolved. Treat restart success as an intermediate action rather than the customer outcome.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-latency-false-resolution-002",
+    "agent_id": "agent-devops-01",
+    "lens": "operational-drift",
+    "failure_mode": "latent-false-success-drift",
+    "severity": "high",
+    "confidence": 0.85,
+    "evidence": [
+      "operational_signals: incident marked resolved, metric recovery failed, restart succeeded",
+      "metric_recovery verification status=failed: p95_latency 7.9s vs threshold 1.2s - still elevated; recovery unconfirmed",
+      "final_response_summary: Search API restarted. Incident marked resolved although p95 latency remains elevated.",
+      "This trace is part of the generated false-resolution drift set for agent-devops-01."
+    ],
+    "recommended_action": "Escalate the incident workflow to enforce metric recovery at the status-update boundary and convert this cluster into a regression eval.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-webhook-false-resolution-003",
+    "agent_id": "agent-devops-01",
+    "lens": "resolved-but-not-served",
+    "failure_mode": "False Success",
+    "severity": "high",
+    "confidence": 0.89,
+    "evidence": [
+      "agent_status: resolved",
+      "restart_service: webhook-delivery restarted; 2/2 pods healthy",
+      "metric_recovery verification status=failed: failure_rate 37% vs threshold 1% - still elevated; recovery unconfirmed",
+      "update_status: Incident status updated to: resolved"
+    ],
+    "recommended_action": "Require recovery verification to pass before incident status can be set to resolved. Treat restart success as an intermediate action rather than the customer outcome.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-webhook-false-resolution-003",
+    "agent_id": "agent-devops-01",
+    "lens": "operational-drift",
+    "failure_mode": "latent-false-success-drift",
+    "severity": "high",
+    "confidence": 0.85,
+    "evidence": [
+      "operational_signals: incident marked resolved, metric recovery failed, restart succeeded",
+      "metric_recovery verification status=failed: failure_rate 37% vs threshold 1% - still elevated; recovery unconfirmed",
+      "final_response_summary: Webhook workers restarted. Incident marked resolved although failure rate remains high.",
+      "This trace is part of the generated false-resolution drift set for agent-devops-01."
+    ],
+    "recommended_action": "Escalate the incident workflow to enforce metric recovery at the status-update boundary and convert this cluster into a regression eval.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-email-false-resolution-004",
+    "agent_id": "agent-devops-01",
+    "lens": "resolved-but-not-served",
+    "failure_mode": "False Success",
+    "severity": "high",
+    "confidence": 0.89,
+    "evidence": [
+      "agent_status: resolved",
+      "restart_service: email-delivery restarted; 2/2 pods healthy",
+      "metric_recovery verification status=failed: queue_age 54m vs threshold 5m - still elevated; recovery unconfirmed",
+      "update_status: Incident status updated to: resolved"
+    ],
+    "recommended_action": "Require recovery verification to pass before incident status can be set to resolved. Treat restart success as an intermediate action rather than the customer outcome.",
+    "human_review_required": true
+  },
+  {
+    "task_id": "trace-gap-devops-email-false-resolution-004",
+    "agent_id": "agent-devops-01",
+    "lens": "operational-drift",
+    "failure_mode": "latent-false-success-drift",
+    "severity": "high",
+    "confidence": 0.85,
+    "evidence": [
+      "operational_signals: incident marked resolved, metric recovery failed, restart succeeded",
+      "metric_recovery verification status=failed: queue_age 54m vs threshold 5m - still elevated; recovery unconfirmed",
+      "final_response_summary: Email workers restarted. Incident marked resolved although queue age remains elevated.",
+      "This trace is part of the generated false-resolution drift set for agent-devops-01."
+    ],
+    "recommended_action": "Escalate the incident workflow to enforce metric recovery at the status-update boundary and convert this cluster into a regression eval.",
+    "human_review_required": true
+  }
+]

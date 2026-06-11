@@ -1,0 +1,27 @@
+{
+  "run_id": "46acce1d-55ca-43a6-9fdc-5523d209c5d9",
+  "cluster_count": 15,
+  "artifact_count": 24,
+  "finding_count": 24,
+  "clean_task_ids": [
+    "trace-gap-control-refund-escalated-001",
+    "trace-gap-control-devops-monitoring-001",
+    "trace-gap-control-recruit-minimal-001",
+    "trace-gap-control-support-safe-reply-001"
+  ],
+  "by_lens": {
+    "context-neglect-gap": 4,
+    "customer-effort-inflation": 4,
+    "trust-damaging-service": 4,
+    "operational-drift": 8,
+    "resolved-but-not-served": 4
+  },
+  "by_agent": {
+    "agent-support-01": 12,
+    "agent-recruiting-01": 4,
+    "agent-devops-01": 8
+  },
+  "by_severity": {
+    "high": 24
+  }
+}

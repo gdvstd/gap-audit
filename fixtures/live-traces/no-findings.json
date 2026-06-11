@@ -1,0 +1,1190 @@
+[
+  {
+    "task_id": "trace-gap-refund-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-enterprise-002",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-enterprise-002",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-enterprise-002",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-refund-enterprise-002",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-credit-sla-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-credit-sla-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-credit-sla-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-credit-sla-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-cancel-context-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-cancel-context-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-cancel-context-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-cancel-context-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-info-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-info-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-info-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-info-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-self-service-loop-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-self-service-loop-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-self-service-loop-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-self-service-loop-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-handoff-no-summary-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-handoff-no-summary-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-handoff-no-summary-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-handoff-no-summary-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-contact-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-contact-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-contact-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-effort-repeat-contact-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-retention-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-retention-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-retention-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-retention-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-eval-retention-002",
+    "agent_id": "agent-recruiting-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-eval-retention-002",
+    "agent_id": "agent-recruiting-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-eval-retention-002",
+    "agent_id": "agent-recruiting-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-eval-retention-002",
+    "agent_id": "agent-recruiting-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-offer-memory-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-offer-memory-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-offer-memory-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-offer-memory-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-shared-notes-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-shared-notes-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-shared-notes-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-recruit-shared-notes-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-002",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-002",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-002",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-002",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-003",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-003",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-003",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-003",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-004",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-004",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-004",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-support-guardrail-004",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-false-resolution-001",
+    "agent_id": "agent-devops-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-false-resolution-001",
+    "agent_id": "agent-devops-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-false-resolution-001",
+    "agent_id": "agent-devops-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-latency-false-resolution-002",
+    "agent_id": "agent-devops-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-latency-false-resolution-002",
+    "agent_id": "agent-devops-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-latency-false-resolution-002",
+    "agent_id": "agent-devops-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-webhook-false-resolution-003",
+    "agent_id": "agent-devops-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-webhook-false-resolution-003",
+    "agent_id": "agent-devops-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-webhook-false-resolution-003",
+    "agent_id": "agent-devops-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-email-false-resolution-004",
+    "agent_id": "agent-devops-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-email-false-resolution-004",
+    "agent_id": "agent-devops-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-devops-email-false-resolution-004",
+    "agent_id": "agent-devops-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-refund-escalated-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-refund-escalated-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-refund-escalated-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-refund-escalated-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-refund-escalated-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-devops-monitoring-001",
+    "agent_id": "agent-devops-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-devops-monitoring-001",
+    "agent_id": "agent-devops-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-devops-monitoring-001",
+    "agent_id": "agent-devops-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-devops-monitoring-001",
+    "agent_id": "agent-devops-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-devops-monitoring-001",
+    "agent_id": "agent-devops-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-recruit-minimal-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-recruit-minimal-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-recruit-minimal-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-recruit-minimal-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-recruit-minimal-001",
+    "agent_id": "agent-recruiting-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-support-safe-reply-001",
+    "agent_id": "agent-support-01",
+    "lens": "resolved-but-not-served",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-support-safe-reply-001",
+    "agent_id": "agent-support-01",
+    "lens": "customer-effort-inflation",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "extract_conversation_signals",
+      "get_artifact",
+      "inspect_handoff_quality"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-support-safe-reply-001",
+    "agent_id": "agent-support-01",
+    "lens": "trust-damaging-service",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_service_outcomes",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-support-safe-reply-001",
+    "agent_id": "agent-support-01",
+    "lens": "context-neglect-gap",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "extract_conversation_signals",
+      "get_agent_profile",
+      "get_artifact"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "task_id": "trace-gap-control-support-safe-reply-001",
+    "agent_id": "agent-support-01",
+    "lens": "operational-drift",
+    "reason": "no_scripted_demo_finding_for_lens",
+    "checked_tools": [
+      "aggregate_guardrail_events",
+      "aggregate_service_outcomes",
+      "get_artifact",
+      "search_findings_history"
+    ],
+    "confidence": 0.9
+  }
+]

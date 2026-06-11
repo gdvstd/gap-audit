@@ -1,0 +1,87 @@
+# Google Cloud Build pipeline for SilentOps
+# Builds Docker image, pushes to Artifact Registry, and deploys to Cloud Run
+#
+# Usage:
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_PROJECT_ID=my-project,_REGION=us-central1,_SERVICE_NAME=silentops,_REPO_NAME=silentops
+
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:$SHORT_SHA'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+    env:
+      - 'DOCKER_BUILDKIT=1'
+
+  # Step 2: Push image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:$SHORT_SHA'
+
+  # Step 3: Deploy to Cloud Run (use the Cloud SDK image + gcloud run deploy)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    id: 'deploy-cloud-run'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:$SHORT_SHA'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--port=8080'
+      - '--allow-unauthenticated'
+      - '--memory=1Gi'
+      - '--cpu=1'
+      - '--timeout=3600'
+
+substitutions:
+  _PROJECT_ID: 'my-project'
+  _REGION: 'us-central1'
+  _SERVICE_NAME: 'silentops'
+  _REPO_NAME: 'silentops'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'
+
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:$SHORT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+
+timeout: '3600s'
+
+# ============================================================================
+# How to pass adapter credentials:
+#
+# Add the `--set-env-vars` flag to the gcloud run deploy step:
+#
+#   gcloud run deploy silentops \
+#     --image ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:$SHORT_SHA \
+#     --region=${_REGION} \
+#     --port=8080 \
+#     --allow-unauthenticated \
+#     --set-env-vars=\
+#   ARIZE_ENABLED=true,\
+#   ARIZE_PROJECT_ID=YOUR_PROJECT_ID,\
+#   ARIZE_API_KEY=YOUR_API_KEY,\
+#   MONGODB_ENABLED=true,\
+#   MONGODB_URI=YOUR_URI,\
+#   GEMINI_ENABLED=true,\
+#   GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},\
+#   GOOGLE_CLOUD_LOCATION=${_REGION},\
+#   AGENT_BUILDER_ENABLED=true,\
+#   AGENT_BUILDER_APP_ID=YOUR_APP_ID
+#
+# Or use Cloud Run secrets manager for sensitive values.
+# ============================================================================

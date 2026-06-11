@@ -1,0 +1,58 @@
+{
+  "name": "SilentOps",
+  "version": "1.0.0",
+  "description": "Post-hoc supervision layer for autonomous agents: audits observable artifacts to find failures that looked successful.",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "actor:run": "tsx actor-sim/run.ts",
+    "actor:normalize": "tsx scripts/normalize-traces.ts fixtures/live-traces",
+    "audit:live": "tsx scripts/audit-live.ts",
+    "check:mongo": "tsx scripts/check-mongo.ts",
+    "push:arize": "tsx scripts/push-traces-arize.ts",
+    "seed:store": "tsx scripts/seed-store.ts",
+    "mcp:introspect": "tsx scripts/mcp-introspect.ts",
+    "audit:loop": "tsx scripts/audit-loop.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "packageManager": "pnpm@10.27.0",
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.1.7",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "@arizeai/openinference-semantic-conventions": "^2.5.0",
+    "@google/genai": "^2.8.0",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.218.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.218.0",
+    "@opentelemetry/resources": "^2.7.1",
+    "@opentelemetry/sdk-trace-node": "^2.7.1",
+    "mongodb": "^7.2.0",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

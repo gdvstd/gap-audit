@@ -1,0 +1,47 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build outputs
+.next
+dist
+coverage
+node_modules
+
+# Tests
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+vitest.config.ts
+
+# Development
+.env.local
+.env.*.local
+.claude
+plan/
+
+# Documentation (exclude to reduce image size)
+*.md
+README.md
+LICENSE
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.eslintignore
+.prettierignore
+# NOTE: do NOT ignore pnpm-lock.yaml — the Dockerfile needs it for
+# `pnpm install --frozen-lockfile`.
+.env
+.env.example

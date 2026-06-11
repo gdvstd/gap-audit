@@ -1,0 +1,76 @@
+{
+  "$comment": "SilentOps post-hoc audit workflow for Google Cloud Agent Builder. Orchestrates Gemini reasoning over partner-MCP-sourced data. This is the track-qualifying integration: Gemini + Agent Builder + Arize MCP (+ MongoDB MCP). Deploy by importing into an Agent Builder app and wiring the MCP servers from mcp-servers.json.",
+  "name": "silentops-audit-workflow",
+  "description": "Audit completed autonomous-agent tasks for silent failures, privacy retention, guardrail friction, and latent risk patterns.",
+  "reasoning_engine": {
+    "model": "${GEMINI_MODEL}",
+    "provider": "vertex"
+  },
+  "inputs": {
+    "agent_id": "string (optional) — limit to one actor agent",
+    "since": "string (optional) — ISO timestamp lower bound",
+    "limit": "number (optional)"
+  },
+  "steps": [
+    {
+      "id": "ingest",
+      "type": "mcp_tool",
+      "server": "phoenix",
+      "tool": "list-traces",
+      "args": { "project": "${PHOENIX_PROJECT}", "limit": "{{inputs.limit}}" },
+      "follow_up_tools": ["get-trace", "get-spans"],
+      "description": "Introspect the agent's own traces/spans from Phoenix at runtime via Phoenix MCP (INGEST boundary). Raw — must be normalized next."
+    },
+    {
+      "id": "normalize",
+      "type": "http_call",
+      "endpoint": "${APP_BASE_URL}/api/artifacts/ingest",
+      "description": "Hand raw traces to the SilentOps Normalizer: redact + mask sensitive values (privacy by construction) and emit AuditArtifacts. The Gemini reasoning steps NEVER see raw traces."
+    },
+    {
+      "id": "triage",
+      "type": "gemini_reason",
+      "description": "Per artifact, choose which of the 7 audit lenses apply (evidence-output, false-success, privacy-retention, goal-outcome, user-alignment, guardrail-friction, latent-risk-pattern).",
+      "tools": ["get_artifact", "get_agent_profile"]
+    },
+    {
+      "id": "audit",
+      "type": "gemini_reason",
+      "description": "Run the focused per-lens reasoning loop over the masked artifact + agent profile + history. Emit findings with severity, confidence, grounded evidence (no raw values), and detection_source.",
+      "tools": [
+        "get_artifact",
+        "get_agent_profile",
+        "search_findings_history",
+        "find_similar_findings",
+        "aggregate_guardrail_events"
+      ]
+    },
+    {
+      "id": "persist",
+      "type": "mcp_tool",
+      "server": "mongodb",
+      "tool": "insert-many",
+      "description": "Persist findings to MongoDB audit memory (MEMORY boundary). Privacy-safe records only.",
+      "args": { "database": "${MONGODB_DATABASE}", "collection": "findings" }
+    },
+    {
+      "id": "cluster_search",
+      "type": "mcp_tool",
+      "server": "mongodb",
+      "tool": "aggregate",
+      "description": "Search/cluster recurring failure patterns across history via MongoDB aggregation.",
+      "args": { "database": "${MONGODB_DATABASE}", "collection": "findings" }
+    },
+    {
+      "id": "write_eval",
+      "type": "mcp_tool",
+      "server": "phoenix",
+      "tool": "add-dataset-examples",
+      "args": { "dataset": "silentops-regression-evals" },
+      "description": "Write regression eval cases (from confirmed findings) back to Phoenix as dataset examples, closing the audit→eval loop. Track runs with list-experiments-for-dataset.",
+      "condition": "finding.converted_to_eval == true"
+    }
+  ],
+  "privacy_invariant": "MCP servers are wired only at the ingest and memory boundaries. The Gemini reasoning steps operate exclusively on normalized, redacted, masked artifacts via the in-process tool layer; raw sensitive values never reach the model.",
+  "fallback": "When this Agent Builder workflow is not configured, the app runs the same pipeline in-process (Arize HTTP/OTLP + MongoDB Node.js driver + Gemini SDK) via WorkflowOrchestratorAdapter's local path, so local/seeded demo mode works without MCP access."
+}

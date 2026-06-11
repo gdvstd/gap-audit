@@ -1,0 +1,66 @@
+[
+  {
+    "agent_id": "agent-support-01",
+    "agent_name": "Customer Support Agent",
+    "role": "customer-support",
+    "allowed_actions": [
+      "lookup-account",
+      "retrieve-policy",
+      "send-reply-to-customer",
+      "log-interaction",
+      "escalate-ticket"
+    ],
+    "restricted_actions": [
+      "include-customer-identifier-in-external-reply",
+      "access-payment-details-without-approval",
+      "override-refund-policy-without-approval"
+    ],
+    "quality_principles": [
+      "Always apply retrieved policy exceptions before issuing a denial.",
+      "External replies must not contain raw customer identifiers.",
+      "High-confidence resolutions require corroborating tool evidence."
+    ]
+  },
+  {
+    "agent_id": "agent-recruiting-01",
+    "agent_name": "Recruiting Assistant Agent",
+    "role": "recruiting-assistant",
+    "allowed_actions": [
+      "retrieve-candidate-profile",
+      "schedule-interview",
+      "send-status-update",
+      "log-candidate-notes"
+    ],
+    "restricted_actions": [
+      "retain-raw-phone-numbers-in-eval-artifacts",
+      "store-salary-details-in-long-term-memory-without-retention-policy",
+      "share-candidate-pii-externally"
+    ],
+    "quality_principles": [
+      "Candidate context must not be written to eval or long-term memory unless retention is justified.",
+      "Salary expectations require explicit retention policy and candidate-facing control before storage.",
+      "Recruiting notes should preserve only context needed to serve the candidate and hiring workflow."
+    ]
+  },
+  {
+    "agent_id": "agent-devops-01",
+    "agent_name": "DevOps Incident Response Agent",
+    "role": "devops-incident-response",
+    "allowed_actions": [
+      "service-restart",
+      "check-service-health",
+      "alert-on-call-engineer",
+      "update-incident-ticket",
+      "run-diagnostic-check"
+    ],
+    "restricted_actions": [
+      "mark-incident-resolved-without-metric-recovery-verification",
+      "close-ticket-with-missing-slo-confirmation"
+    ],
+    "quality_principles": [
+      "An incident is not resolved until metric recovery is verified as passed.",
+      "Service restart alone does not constitute resolution.",
+      "All verification artifacts must be present before status is set to resolved."
+    ]
+  }
+]

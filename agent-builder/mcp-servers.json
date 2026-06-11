@@ -1,0 +1,34 @@
+{
+  "$comment": "Partner MCP servers registered as tools in the SilentOps audit workflow (Google Cloud Agent Builder). Track-qualifying integration per the Rapid Agent Hackathon. Fill the env-referenced secrets at deploy time; do NOT commit real credentials.",
+  "mcpServers": {
+    "phoenix": {
+      "description": "Arize Phoenix MCP server (@arizeai/phoenix-mcp) — the Arize-track-qualifying server. Lets the agent introspect its own operational data at runtime: traces, spans, sessions, datasets, experiments, prompts. Used at the INGEST boundary (pull traces) and to write regression eval cases back as dataset examples.",
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@arizeai/phoenix-mcp@latest", "--baseUrl", "${PHOENIX_HOST}", "--apiKey", "${PHOENIX_API_KEY}"],
+      "env": {
+        "PHOENIX_API_KEY": "${PHOENIX_API_KEY}",
+        "PHOENIX_HOST": "${PHOENIX_HOST}",
+        "PHOENIX_PROJECT": "${PHOENIX_PROJECT}"
+      },
+      "tools_used": {
+        "ingest_traces": ["list-traces", "get-trace", "get-spans", "get-span-annotations"],
+        "sessions": ["list-sessions", "get-session"],
+        "write_regression_evals": ["list-datasets", "add-dataset-examples"],
+        "track_eval_runs": ["list-experiments-for-dataset", "get-experiment-by-id"]
+      },
+      "notes": "Verified against @arizeai/phoenix-mcp tool surface (2026-06). Traces must be sent to Phoenix Cloud (app.phoenix.arize.com) for the MCP to introspect them. Raw traces/spans returned here are passed to the Normalizer and redacted/masked before any reasoning — the Gemini auditor never sees raw values."
+    },
+    "mongodb": {
+      "description": "MongoDB MCP server (mongodb-mcp-server) — audit memory: store findings/clusters, search failure patterns, persist regression eval cases. Used at the MEMORY boundary on already-privacy-safe records.",
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "mongodb-mcp-server"],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "${MONGODB_URI}"
+      },
+      "tools_used": ["find", "insert-many", "aggregate", "count"],
+      "notes": "Confirm exact tool names against the deployed mongodb-mcp-server version. Only privacy-safe documents (entity types, redacted snippets, hashes) are written — never raw sensitive values."
+    }
+  }
+}
