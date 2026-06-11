@@ -66,10 +66,10 @@ export default async function OverviewPage() {
       {/* Hero: the thesis + the one number that matters */}
       <section className="border border-zinc-200 bg-white rounded-lg p-5 md:p-6">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-zinc-950">
-            Oversight &amp; risk analysis for service agents
-          </h1>
-          <span className="shrink-0 text-[11px] text-zinc-400 mt-1">
+          <p className="text-sm text-zinc-400">
+            Audit the gaps behind your AI agents&apos; resolved work
+          </p>
+          <span className="shrink-0 text-[11px] text-zinc-400">
             {status.storage_mode} · {status.arize === "enabled" ? "Phoenix" : "Phoenix offline"}
           </span>
         </div>
@@ -77,16 +77,16 @@ export default async function OverviewPage() {
         {/* metric strip under the title — balanced 5-up */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-6">
           <div className={cellCls}>
-            <div className="text-3xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
-            <div className="text-xs text-zinc-500 mt-1 leading-4">traces containing silent failures · {failRate}%</div>
+            <div className="text-4xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
+            <div className="text-sm text-zinc-700 mt-1.5 leading-4">traces containing silent failures · {failRate}%</div>
           </div>
           <div className={cellCls}>
-            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{artifacts.length}</div>
-            <div className="text-xs text-zinc-500 mt-1">traces audited</div>
+            <div className="text-4xl font-semibold tracking-tight text-zinc-950">{artifacts.length}</div>
+            <div className="text-sm text-zinc-700 mt-1.5">traces audited</div>
           </div>
           <div className={cellCls}>
-            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
-            <div className="text-xs text-zinc-500 mt-1">silent failures</div>
+            <div className="text-4xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
+            <div className="text-sm text-zinc-700 mt-1.5">silent failures</div>
             <div className="mt-2">
               <div className="flex h-2 w-full overflow-hidden rounded bg-zinc-100">
                 {(["critical", "high", "medium", "low"] as Severity[]).map((s) =>
@@ -103,12 +103,12 @@ export default async function OverviewPage() {
             </div>
           </div>
           <div className={cellCls}>
-            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{clusters.length}</div>
-            <div className="text-xs text-zinc-500 mt-1">recurring patterns</div>
+            <div className="text-4xl font-semibold tracking-tight text-zinc-950">{clusters.length}</div>
+            <div className="text-sm text-zinc-700 mt-1.5">recurring patterns</div>
           </div>
           <div className={cellCls}>
-            <div className="text-3xl font-semibold tracking-tight text-zinc-950">{evalCases.length}</div>
-            <div className="text-xs text-zinc-500 mt-1">regression tests</div>
+            <div className="text-4xl font-semibold tracking-tight text-zinc-950">{evalCases.length}</div>
+            <div className="text-sm text-zinc-700 mt-1.5">regression tests</div>
           </div>
         </div>
       </section>
