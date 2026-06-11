@@ -48,11 +48,9 @@ export default async function FindingsPage({ searchParams }: { searchParams: Sea
     <div className="space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-zinc-500">Service gap findings</p>
-          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">What went wrong after the agent said done</h1>
-          <p className="text-sm text-zinc-600 mt-2 max-w-3xl">
-            Each row ties a completed trace to the customer-visible or operator-visible problem GapAudit found.
-          </p>
+          <p className="text-xs uppercase tracking-wide text-zinc-500">Gaps</p>
+          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">What went wrong after &ldquo;done&rdquo;</h1>
+          <p className="text-sm text-zinc-500 mt-1">Each finding ties a completed trace to the failure it hid.</p>
         </div>
         <div className="text-sm text-zinc-500">{findings.length} shown / {allFindings.length} total</div>
       </div>

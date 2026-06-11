@@ -34,11 +34,9 @@ export default async function ClustersPage() {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Recurring service patterns</p>
-        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Where isolated trace failures become product risk</h1>
-        <p className="text-sm text-zinc-600 mt-2 max-w-3xl">
-          Clusters group similar findings by agent, gap type, task, and evidence overlap so review can target workflow changes rather than single tickets.
-        </p>
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Patterns</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">One-off failures that became systemic</h1>
+        <p className="text-sm text-zinc-500 mt-1">Findings grouped by agent, failure mode, and evidence — fix the workflow, not the ticket.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4">

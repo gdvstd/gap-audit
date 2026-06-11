@@ -23,12 +23,9 @@ export default async function ActivityPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-zinc-500">Audit activity</p>
-          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Findings as they were detected</h1>
-          <p className="text-sm text-zinc-600 mt-2 max-w-3xl">
-            Every finding in detection order, newest first. A fresh audit round shows up at the top —
-            this is the live record of what the GapAudit agent surfaced and when.
-          </p>
+          <p className="text-xs uppercase tracking-wide text-zinc-500">Activity</p>
+          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Findings as detected</h1>
+          <p className="text-sm text-zinc-500 mt-1">Newest first — a fresh audit round lands at the top.</p>
         </div>
         <div className="text-sm text-zinc-500 text-right">
           <div>{findings.length} findings</div>

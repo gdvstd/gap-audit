@@ -39,12 +39,9 @@ export default async function EvalsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Regression suites</p>
-        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Tests that guard against confirmed failures recurring</h1>
-        <p className="text-sm text-zinc-600 mt-2 max-w-3xl">
-          Each suite is a Phoenix dataset that accumulates test cases plus one judge prompt that grades every run.
-          Reviewers add cases via &ldquo;Convert to regression test&rdquo; on a confirmed finding.
-        </p>
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Regressions</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Suites that stop failures from recurring</h1>
+        <p className="text-sm text-zinc-500 mt-1">Each suite is a Phoenix dataset of test cases + one judge prompt.</p>
       </div>
 
       {groups.length === 0 && (
