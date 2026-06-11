@@ -112,7 +112,7 @@ export default async function OverviewPage() {
           </div>
           <div className={cellCls}>
             <div className="text-4xl font-semibold tracking-tight text-zinc-950">{evalCases.length}</div>
-            <div className="text-sm text-zinc-700 mt-1.5">regression tests</div>
+            <div className="text-sm text-zinc-700 mt-1.5">regression tests added</div>
           </div>
         </div>
       </section>
