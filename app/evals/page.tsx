@@ -76,22 +76,16 @@ export default async function EvalsPage() {
             <table className="w-full text-sm">
               <thead className="bg-zinc-50">
                 <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 uppercase tracking-wide">
-                  <th className="py-2 px-4">Test input (scenario)</th>
-                  <th className="py-2 px-4">Expected (PASS)</th>
-                  <th className="py-2 px-4">Prohibited (FAIL)</th>
+                  <th className="py-2 px-4">Test input (from trace)</th>
+                  <th className="py-2 px-4">Expected output</th>
                   <th className="py-2 px-4">Source gap</th>
                 </tr>
               </thead>
               <tbody>
                 {g.cases.map((ec) => (
                   <tr key={ec.eval_id} className="border-b border-zinc-100 hover:bg-zinc-50 align-top">
-                    <td className="py-3 px-4 text-zinc-800 max-w-xs leading-5">{ec.input}</td>
-                    <td className="py-3 px-4 text-zinc-600 max-w-xs">
-                      <ul className="list-disc pl-4 space-y-1">{ec.expected_behavior.map((b, i) => <li key={i}>{b}</li>)}</ul>
-                    </td>
-                    <td className="py-3 px-4 text-zinc-600 max-w-xs">
-                      <ul className="list-disc pl-4 space-y-1">{(ec.prohibited_patterns ?? []).map((p, i) => <li key={i}>{p}</li>)}</ul>
-                    </td>
+                    <td className="py-3 px-4 text-zinc-800 max-w-sm leading-5">{ec.input}</td>
+                    <td className="py-3 px-4 text-zinc-600 max-w-sm leading-5">{ec.expected_behavior.join(" ") || <span className="text-zinc-400">—</span>}</td>
                     <td className="py-3 px-4">
                       <Link href={"/findings/" + ec.source_finding_id} className="font-mono text-xs text-blue-700 hover:underline">{ec.source_finding_id.slice(0, 8)}…</Link>
                       <div className="text-xs text-zinc-400">{ec.agent_id}</div>
@@ -99,7 +93,7 @@ export default async function EvalsPage() {
                   </tr>
                 ))}
                 {g.cases.length === 0 && (
-                  <tr><td colSpan={4} className="py-6 text-center text-zinc-400 text-sm">Suite created — no test cases yet.</td></tr>
+                  <tr><td colSpan={3} className="py-6 text-center text-zinc-400 text-sm">Suite created — no test cases yet.</td></tr>
                 )}
               </tbody>
             </table>

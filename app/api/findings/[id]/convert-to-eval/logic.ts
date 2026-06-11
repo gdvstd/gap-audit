@@ -6,17 +6,11 @@ import { getRegressionSuite, upsertRegressionSuite, bumpSuiteExampleCount } from
 
 type Body = {
   input?: unknown;
-  expected_behavior?: unknown;
-  prohibited_patterns?: unknown;
-  privacy_constraints?: unknown;
+  expected_output?: unknown;
   target?: unknown; // "existing" | "new"
   dataset_name?: unknown;
   judge_prompt?: unknown;
 };
-
-function strArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string" && x.trim() !== "") : [];
-}
 
 export type ConvertResult =
   | { ok: true; value: { eval_case: RegressionEvalCase; dataset_name: string; phoenix_dataset_id: string; action: "create" | "append" } }
@@ -42,9 +36,7 @@ export async function postConvertToEval(
   if (input === "") return { ok: false, status: 400, error: "input (test scenario) is required" };
   if (datasetName === "") return { ok: false, status: 400, error: "dataset_name is required" };
 
-  const expected = strArr(body.expected_behavior);
-  const prohibited = strArr(body.prohibited_patterns);
-  const privacy = strArr(body.privacy_constraints);
+  const expectedOutput = typeof body.expected_output === "string" ? body.expected_output.trim() : "";
 
   // Resolve the suite + its judge prompt. Existing suites OWN the judge (read-only on the
   // case); a new suite takes the judge prompt from the (edited) body.
@@ -77,7 +69,7 @@ export async function postConvertToEval(
   try {
     const res = await pushDatasetExample(datasetName, action, {
       input: { scenario: input },
-      output: { expected_behavior: expected, prohibited_patterns: prohibited },
+      output: { expected_output: expectedOutput },
       metadata: {
         failure_mode_guarded: finding.failure_mode,
         lens: finding.lens,
@@ -99,13 +91,11 @@ export async function postConvertToEval(
     source_finding_id: finding_id,
     agent_id: finding.agent_id,
     input,
-    expected_behavior: expected,
+    expected_behavior: expectedOutput !== "" ? [expectedOutput] : [],
     failure_mode_guarded: finding.failure_mode,
     dataset_name: datasetName,
     judge_prompt: judgePrompt,
     created_at: nowIso,
-    ...(prohibited.length > 0 ? { prohibited_patterns: prohibited } : {}),
-    ...(privacy.length > 0 ? { privacy_constraints: privacy } : {}),
   };
   await memory.saveEvalCase(evalCase);
   await memory.updateFinding(finding_id, { converted_to_eval: true, updated_at: nowIso });

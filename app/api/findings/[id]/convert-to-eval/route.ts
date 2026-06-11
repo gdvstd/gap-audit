@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { getMemory } from "@/lib/runtime/container";
 import { postConvertToEval } from "./logic";
 
@@ -13,5 +14,9 @@ export async function POST(
   if (!result.ok) {
     return Response.json({ error: result.error }, { status: result.status });
   }
+  // Surface the new test on the Regressions tab + the finding's converted state immediately.
+  revalidatePath("/evals");
+  revalidatePath("/findings");
+  revalidatePath(`/findings/${id}`);
   return Response.json(result.value);
 }

@@ -1,11 +1,13 @@
 import { getMemory } from "@/lib/runtime/container";
-import { draftEval } from "@/lib/eval-generator/draft";
+import { traceScenario, draftCriteria } from "@/lib/eval-generator/draft";
 import { listRegressionSuites } from "@/lib/review/regression-suites";
 
-// Propose a regression test for a confirmed finding (Gemini draft) + the existing suites
-// the user can target. The human edits this draft before converting.
+// Prepare the convert-to-regression panel: the FIXED test input (the original trace
+// scenario) + the existing suites a reviewer can target. Gemini grading criteria are only
+// drafted when `?criteria=1` — i.e. when the reviewer is creating a NEW suite (an existing
+// suite already owns its judge).
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
   const { id } = await params;
@@ -16,26 +18,30 @@ export async function POST(
   if (finding === undefined) {
     return Response.json({ error: `finding '${id}' not found` }, { status: 404 });
   }
-
   const decisions = await memory.listReviewDecisions({ finding_id: id });
   if (!decisions.some((d) => d.decision === "confirmed")) {
     return Response.json({ error: "confirm the finding before drafting a regression test" }, { status: 400 });
   }
 
   const artifact = await memory.getArtifact(finding.task_id);
-  const [{ draft, source }, suites] = await Promise.all([
-    draftEval(finding, artifact),
-    listRegressionSuites(),
-  ]);
-
-  // Suggest the suite whose failure_mode matches this finding (so similar tests group).
+  const input = traceScenario(finding, artifact);
+  const suites = await listRegressionSuites();
   const suggested = suites.find((s) => s.failure_mode === finding.failure_mode || s.lens === finding.lens);
 
+  const wantCriteria = new URL(request.url).searchParams.get("criteria") === "1";
+  let criteria: { expected_output: string; judge_prompt: string } | undefined;
+  let source: "gemini" | "template" | undefined;
+  if (wantCriteria) {
+    const res = await draftCriteria(finding, artifact);
+    criteria = res.criteria;
+    source = res.source;
+  }
+
   return Response.json({
-    draft,
-    source,
+    input,
     suites: suites.map((s) => ({ dataset_name: s.dataset_name, failure_mode: s.failure_mode, judge_prompt: s.judge_prompt })),
     suggested_dataset: suggested?.dataset_name ?? null,
-    finding: { failure_mode: finding.failure_mode, lens: finding.lens, agent_id: finding.agent_id },
+    failure_mode: finding.failure_mode,
+    ...(criteria ? { criteria, source } : {}),
   });
 }
