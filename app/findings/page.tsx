@@ -49,8 +49,7 @@ export default async function FindingsPage({ searchParams }: { searchParams: Sea
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-wide text-zinc-500">Gaps</p>
-          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">What went wrong after &ldquo;done&rdquo;</h1>
-          <p className="text-sm text-zinc-500 mt-1">Each finding ties a completed trace to the failure it hid.</p>
+          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Gap Analysis</h1>
         </div>
         <div className="text-sm text-zinc-500">{findings.length} shown / {allFindings.length} total</div>
       </div>

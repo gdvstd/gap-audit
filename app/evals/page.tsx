@@ -40,8 +40,8 @@ export default async function EvalsPage() {
     <div className="space-y-5">
       <div>
         <p className="text-xs uppercase tracking-wide text-zinc-500">Regressions</p>
-        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Suites that stop failures from recurring</h1>
-        <p className="text-sm text-zinc-500 mt-1">Each suite is a Phoenix dataset of test cases + one judge prompt.</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Confirmed Test Suites</h1>
+        <p className="text-sm text-zinc-500 mt-1">Each suite is a Phoenix dataset + one judge prompt.</p>
       </div>
 
       {groups.length === 0 && (

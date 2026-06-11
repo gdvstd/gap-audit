@@ -24,8 +24,7 @@ export default async function ActivityPage() {
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-wide text-zinc-500">Activity</p>
-          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Findings as detected</h1>
-          <p className="text-sm text-zinc-500 mt-1">Newest first — a fresh audit round lands at the top.</p>
+          <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Findings Timeline</h1>
         </div>
         <div className="text-sm text-zinc-500 text-right">
           <div>{findings.length} findings</div>

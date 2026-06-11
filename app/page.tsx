@@ -71,19 +71,16 @@ export default async function OverviewPage() {
       {/* Hero: the thesis + the one number that matters */}
       <section className="border border-zinc-200 bg-white rounded-lg p-5 md:p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-xl">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">GapAudit · post-hoc agent supervision</p>
+          <div className="max-w-lg">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">GapAudit</p>
             <h1 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight text-zinc-950">
-              Completed work that silently failed.
+              Post-hoc supervision for autonomous agents
             </h1>
-            <p className="mt-2 text-sm text-zinc-600 leading-6">
-              Audits finished agent traces for failures that looked successful — no error was ever thrown.
-            </p>
           </div>
           <div className="flex items-end gap-8">
             <div>
-              <div className="text-5xl font-semibold tracking-tight text-rose-600">{failRate}%</div>
-              <div className="text-xs text-zinc-500 mt-1">of audited traces<br />had a silent failure</div>
+              <div className="text-5xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
+              <div className="text-xs text-zinc-500 mt-1">traces containing<br />silent failures · {failRate}%</div>
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               <Stat label="traces audited" value={artifacts.length} />

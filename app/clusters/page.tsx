@@ -35,8 +35,8 @@ export default async function ClustersPage() {
     <div className="space-y-5">
       <div>
         <p className="text-xs uppercase tracking-wide text-zinc-500">Patterns</p>
-        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">One-off failures that became systemic</h1>
-        <p className="text-sm text-zinc-500 mt-1">Findings grouped by agent, failure mode, and evidence — fix the workflow, not the ticket.</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 mt-1">Recurring Failure Patterns</h1>
+        <p className="text-sm text-zinc-500 mt-1">Grouped by agent · failure mode · evidence</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4">
