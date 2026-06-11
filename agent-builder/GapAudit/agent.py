@@ -159,7 +159,8 @@ def prepare_findings(findings: list) -> dict:
             task_id, agent_id, lens, failure_mode,
             severity ("low"|"medium"|"high"|"critical"),
             confidence (0.0-1.0), evidence (list[str]),
-            recommended_action (str), human_review_required (bool).
+            recommended_action (str), human_review_required (bool),
+            expected_output (str — YOUR judgment of what a correct run SHOULD have produced).
             Optional: evidence_keywords (list[str]), task_type (str),
             cluster_id (str), detection_source (str).
     Returns:
@@ -193,6 +194,8 @@ def prepare_findings(findings: list) -> dict:
             doc["task_type"] = str(f["task_type"])
         if f.get("cluster_id"):
             doc["cluster_id"] = str(f["cluster_id"])
+        if f.get("expected_output"):
+            doc["expected_output"] = str(f["expected_output"])
         docs.append(doc)
     return {"documents": docs, "count": len(docs)}
 
@@ -323,6 +326,12 @@ STEP 2 — JUDGE. Your job is to catch SILENT FAILURES: tasks the agent marked
   failure, so look carefully. Add operational-drift only when recurrence (checked via the
   MongoDB tools) directly matches the trace.
 
+  For EVERY finding you emit, also produce `expected_output`: a concrete, one-to-two
+  sentence statement of what a CORRECT run SHOULD have produced for THIS trace — the
+  outcome that would have actually served the goal. This is YOUR judgment from the trace's
+  input + task + observed output; it is NOT copied from the trace (the trace only contains
+  what the agent actually did). Keep it privacy-safe (entity types, not raw values).
+
 {LENSES}
 
 {SEVERITY}
@@ -330,7 +339,8 @@ STEP 2 — JUDGE. Your job is to catch SILENT FAILURES: tasks the agent marked
 STEP 3 — PERSIST (MongoDB MCP). Collect all judged findings as draft dicts with keys:
   task_id (= the trace's silentops.task_id from STEP 1, NEVER the Phoenix hex),
   agent_id, lens, failure_mode, severity, confidence (0-1), evidence (list of
-  short strings), recommended_action, human_review_required (bool). Then:
+  short strings), recommended_action, expected_output (your judgment of the correct
+  output from STEP 2), human_review_required (bool). Then:
     (a) call the `prepare_findings` tool with your list of drafts — it returns
         ready-to-insert documents with finding_id and timestamps;
     (b) call the MongoDB `insert-many` tool with database="{MONGODB_DATABASE}",

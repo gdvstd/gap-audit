@@ -23,6 +23,8 @@ export type LensFindingDraft = {
   recommended_action: string;
   human_review_required: boolean;
   detection_source?: DetectionSource;
+  // The auditor's judgment of what a correct agent run SHOULD have produced for this trace.
+  expected_output?: string;
 };
 
 export type LensNoFindingDraft = {
@@ -50,6 +52,9 @@ export type AuditFinding = {
   cluster_id?: string;
   task_type?: string;
   detection_source?: DetectionSource;
+  // The auditor's judgment of what a correct agent run SHOULD have produced (vs the actual
+  // trace output). Derived by the audit agent, NOT part of the observed trace.
+  expected_output?: string;
   created_at: string;
   updated_at: string;
 };
@@ -104,6 +109,7 @@ export function validateLensFindingDraft(input: unknown): ValidationResult<LensF
   if (isString(input["detection_source"]) && (DETECTION_SOURCES as readonly string[]).includes(input["detection_source"])) {
     draftResult.detection_source = input["detection_source"] as DetectionSource;
   }
+  if (isString(input["expected_output"])) draftResult.expected_output = input["expected_output"];
 
   return ok(draftResult);
 }
@@ -186,6 +192,7 @@ export function validateAuditFinding(input: unknown): ValidationResult<AuditFind
   if (isString(input["detection_source"]) && (DETECTION_SOURCES as readonly string[]).includes(input["detection_source"])) {
     result.detection_source = input["detection_source"] as DetectionSource;
   }
+  if (isString(input["expected_output"])) result.expected_output = input["expected_output"];
 
   return ok(result);
 }

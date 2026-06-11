@@ -42,11 +42,10 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
   const sevRank: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
   const sortedFindings = [...relatedFindings].sort((a, b) => ((sevRank[b.severity] ?? 0) - (sevRank[a.severity] ?? 0)) || (b.confidence - a.confidence));
 
-  const inputSummary = artifact.user_input_summary ?? artifact.customer_input_summary ?? artifact.declared_goal;
-  const rawInput = getRawInput(artifact);
+  const input = getRawInput(artifact) ?? artifact.user_input_summary;
   const task = artifact.company_task ?? artifact.declared_goal;
-  const expected = artifact.customer_goal ?? artifact.declared_goal ?? artifact.user_input_summary;
-  const actual = artifact.final_response_summary ?? artifact.final_output_summary;
+  const output = artifact.final_response_summary ?? artifact.final_output_summary;
+  const expected = mainFinding?.expected_output ?? artifact.customer_goal ?? artifact.declared_goal;
   const phoenixUrl = getPhoenixTraceUrl(artifact);
   const support = artifact.support_context;
   const sourceRefs = artifact.source_refs ?? [];
@@ -105,11 +104,10 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
             )}
 
             <IOProblemTriplet
-              inputSummary={inputSummary}
-              rawInput={rawInput}
+              input={input}
               task={task}
+              output={output}
               expected={expected}
-              actual={actual}
               problemLabel={meta?.label ?? "—"}
               problemText={mainFinding !== undefined && meta !== undefined ? mainFinding.failure_mode + " — " + meta.problem : "No finding attached to this trace."}
             />

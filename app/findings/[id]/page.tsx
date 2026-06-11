@@ -26,11 +26,10 @@ export default async function FindingDetailPage({ params }: { params: PageParams
   else if (isConfirmed) statusValue = "confirmed";
   else if (isDismissed) statusValue = "dismissed";
 
-  const inputSummary = artifact?.user_input_summary ?? artifact?.customer_input_summary ?? artifact?.declared_goal ?? "Not captured in this trace.";
-  const rawInput = artifact !== undefined ? getRawInput(artifact) : undefined;
+  const input = (artifact !== undefined ? getRawInput(artifact) : undefined) ?? artifact?.user_input_summary ?? "Not captured in this trace.";
   const task = artifact?.company_task ?? artifact?.declared_goal ?? "Not captured in this trace.";
-  const expected = artifact?.customer_goal ?? artifact?.declared_goal ?? "Not captured in this trace.";
-  const actual = artifact?.final_response_summary ?? artifact?.final_output_summary ?? "Not captured in this trace.";
+  const output = artifact?.final_response_summary ?? artifact?.final_output_summary ?? "Not captured in this trace.";
+  const expected = finding.expected_output ?? artifact?.customer_goal ?? "Not captured in this trace.";
   const phoenixUrl = artifact !== undefined ? getPhoenixTraceUrl(artifact) : undefined;
 
   return (
@@ -56,7 +55,7 @@ export default async function FindingDetailPage({ params }: { params: PageParams
 
       {/* Input → Expected output → Problem triplet */}
       <section className="bg-white border border-zinc-200 rounded-lg p-5">
-        <IOProblemTriplet inputSummary={inputSummary} rawInput={rawInput} task={task} expected={expected} actual={actual} problemLabel={meta.label} problemText={meta.problem} />
+        <IOProblemTriplet input={input} task={task} output={output} expected={expected} problemLabel={meta.label} problemText={meta.problem} />
       </section>
 
       {/* Expandable trace replay + Phoenix link */}

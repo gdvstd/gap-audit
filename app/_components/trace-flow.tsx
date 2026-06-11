@@ -252,40 +252,50 @@ export function getPhoenixTraceUrl(artifact: AuditArtifact): string | undefined 
   return `${base}/projects/${projectId}/traces/${artifact.phoenix_trace_id}`;
 }
 
-/** The prominent input → task → expected output → problem row shared by both pages. */
-export function IOProblemTriplet({ inputSummary, rawInput, task, expected, actual, problemLabel, problemText }: {
-  inputSummary: string;
-  rawInput?: string | undefined;
+/**
+ * Two clearly separated groups:
+ *  - OBSERVED in the trace (input · task · output) — the real record the agent left.
+ *  - AUDIT AGENT JUDGMENT (expected output · problem) — what GapAudit derived; NOT trace data.
+ */
+export function IOProblemTriplet({ input, task, output, expected, problemLabel, problemText }: {
+  input: string;
   task: string;
+  output: string;
   expected: string;
-  actual: string;
   problemLabel: string;
   problemText: string;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-      <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Input Summary</p>
-        <p className="mt-2 text-sm leading-6 text-zinc-800">{inputSummary}</p>
-        {rawInput !== undefined && rawInput !== "" && (
-          <div className="mt-3 border-t border-zinc-200 pt-2">
-            <p className="text-[11px] uppercase tracking-wide text-zinc-400">User input</p>
-            <p className="mt-1 whitespace-pre-wrap text-xs leading-5 text-zinc-600">{rawInput}</p>
+    <div className="space-y-4">
+      <div>
+        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-zinc-400">Observed in trace</p>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Input</p>
+            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-800">{input}</p>
           </div>
-        )}
+          <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Task</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-800">{task}</p>
+          </div>
+          <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Output</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-800">{output}</p>
+          </div>
+        </div>
       </div>
-      <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Company task</p>
-        <p className="mt-2 text-sm leading-6 text-zinc-800">{task}</p>
-      </div>
-      <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Expected output</p>
-        <p className="mt-2 text-sm leading-6 text-zinc-800">{expected}</p>
-      </div>
-      <div className="rounded border border-rose-200 bg-rose-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-rose-600">Problem · {problemLabel}</p>
-        <p className="mt-2 text-sm leading-6 text-rose-950">{problemText}</p>
-        <p className="mt-2 text-xs text-rose-700/80">Agent ended with: {actual}</p>
+      <div>
+        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-zinc-400">Audit agent judgment</p>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="rounded border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-emerald-700">Expected output</p>
+            <p className="mt-2 text-sm leading-6 text-emerald-950">{expected}</p>
+          </div>
+          <div className="rounded border border-rose-200 bg-rose-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-rose-600">Problem · {problemLabel}</p>
+            <p className="mt-2 text-sm leading-6 text-rose-950">{problemText}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
