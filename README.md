@@ -2,9 +2,18 @@
 
 **Audit the service gaps your AI agents leave behind.**
 
+![GapAudit closes the gap between task completion and customer satisfaction](images/motivation.png)
+
 GapAudit is a customer experience audit dashboard for AI agents. It finds where customer-facing agents completed the task, closed the ticket, or marked the workflow resolved, but still failed the customer.
 
 Task completion is a system status. Service success is a customer outcome. GapAudit finds the gap between them.
+
+### Links
+
+- **Live demo:** https://gap-audit-rust.vercel.app/
+- **Demo video:** https://www.youtube.com/watch?v=DL-9cQSoQ7M
+
+![GapAudit Service Map dashboard](images/main.png)
 
 ## What It Is
 
