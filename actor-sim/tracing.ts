@@ -51,9 +51,10 @@ export function toRawTraceArtifact(
 
   const service = run.service_metadata;
   if (service !== undefined) {
-    if (service.customer_input !== undefined) artifact.customer_input = service.customer_input;
+    // customer_input / customer_goal are NOT recorded on the trace — a real agent trace
+    // only carries what was observed (input, task, output, spans). "Expected outcome" is a
+    // JUDGMENT the audit agent derives (finding.expected_output), not trace data.
     if (service.company_task !== undefined) artifact.company_task = service.company_task;
-    if (service.customer_goal !== undefined) artifact.customer_goal = service.customer_goal;
     if (service.final_response !== undefined) artifact.final_response = service.final_response;
     if (service.conversation_signals !== undefined) artifact.conversation_signals = service.conversation_signals;
     if (service.operational_signals !== undefined) artifact.operational_signals = service.operational_signals;

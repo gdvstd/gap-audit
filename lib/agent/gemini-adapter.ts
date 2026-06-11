@@ -234,8 +234,9 @@ Artifact summary:
 - task_id: ${artifact.task_id}
 - agent_id: ${artifact.agent_id}
 - agent_status: ${artifact.agent_status}
-- customer_goal: ${artifact.customer_goal ?? artifact.user_input_summary}
+- input: ${artifact.user_input_summary}
 - company_task: ${artifact.company_task ?? artifact.declared_goal}
+- final_output: ${artifact.final_output_summary}
 - conversation_signals: ${(artifact.conversation_signals ?? []).join(", ") || "none"}
 - operational_signals: ${(artifact.operational_signals ?? []).join(", ") || "none"}
 - business_signals: ${(artifact.business_signals ?? []).join(", ") || "none"}

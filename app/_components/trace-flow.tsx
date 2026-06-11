@@ -157,21 +157,20 @@ function traceStepFromSpan(span: RawSpan): TraceStep {
 }
 
 function buildTraceSteps(artifact: AuditArtifact): TraceStep[] {
-  const customerGoal = artifact.customer_goal ?? artifact.declared_goal ?? artifact.user_input_summary;
   const companyTask = artifact.company_task ?? artifact.declared_goal;
   const finalResponse = artifact.final_response_summary ?? artifact.final_output_summary;
   const raw = findRawTrace(artifact.task_id);
 
   if (raw !== undefined) {
+    const incoming = raw.user_input ?? raw.customer_input ?? artifact.user_input_summary;
     const steps: TraceStep[] = [
       {
         tone: "input",
         eyebrow: "incoming task",
         title: "Trace started from an incoming request",
-        body: raw.customer_goal ?? raw.customer_input ?? raw.user_input ?? customerGoal,
+        body: incoming,
         payloads: [
-          { label: "Incoming task payload", value: raw.user_input ?? raw.customer_input ?? customerGoal },
-          { label: "Expected outcome", value: raw.customer_goal ?? customerGoal },
+          { label: "Incoming task payload", value: incoming },
           { label: "Support context", value: raw.support_context ?? "No support context captured.", language: raw.support_context === undefined ? "text" : "json" },
         ],
       },
@@ -204,7 +203,7 @@ function buildTraceSteps(artifact: AuditArtifact): TraceStep[] {
   }
 
   const steps: TraceStep[] = [
-    { tone: "input", eyebrow: "incoming task", title: "Trace started from an incoming request", body: customerGoal, payloads: [{ label: "Incoming task payload", value: customerGoal }] },
+    { tone: "input", eyebrow: "incoming task", title: "Trace started from an incoming request", body: artifact.user_input_summary, payloads: [{ label: "Incoming task payload", value: artifact.user_input_summary }] },
     { tone: "context", eyebrow: "assigned work", title: "Agent interpreted the company task", body: companyTask, payloads: [{ label: "Company task", value: companyTask }, { label: "Declared goal", value: artifact.declared_goal }] },
   ];
   for (const fact of artifact.tool_facts) {

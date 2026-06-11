@@ -311,7 +311,6 @@ function buildActorGroundTruthFinding(
       severity: "high",
       confidence: 0.9,
       evidence: [
-        `customer_goal: ${compact(artifact.customer_goal, artifact.user_input_summary)}`,
         toolEvidence(artifact, "lookup_account"),
         toolEvidence(artifact, "policy_search"),
         `final_response_summary: ${compact(artifact.final_response_summary, artifact.final_output_summary)}`,
@@ -352,7 +351,6 @@ function buildActorGroundTruthFinding(
       severity: "high",
       confidence: 0.9,
       evidence: [
-        `customer_goal: ${compact(artifact.customer_goal, artifact.user_input_summary)}`,
         ...memoryEvidence(artifact),
         `final_response_summary: ${compact(artifact.final_response_summary, artifact.final_output_summary)}`,
       ],
