@@ -70,43 +70,45 @@ export default async function OverviewPage() {
     <div className="space-y-6">
       {/* Hero: the thesis + the one number that matters */}
       <section className="border border-zinc-200 bg-white rounded-lg p-5 md:p-6">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-lg">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">GapAudit</p>
-            <h1 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight text-zinc-950">
-              Post-hoc supervision for autonomous agents
-            </h1>
-          </div>
-          <div className="flex items-end gap-8">
-            <div>
-              <div className="text-5xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
-              <div className="text-xs text-zinc-500 mt-1">traces containing<br />silent failures · {failRate}%</div>
-            </div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-              <Stat label="traces audited" value={artifacts.length} />
-              <Stat label="silent failures" value={findings.length} />
-              <Stat label="recurring patterns" value={clusters.length} />
-              <Stat label="regression tests" value={evalCases.length} />
-            </div>
-          </div>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-zinc-950">
+            Oversight &amp; risk analysis for service agents
+          </h1>
+          <span className="shrink-0 text-[11px] text-zinc-400 mt-1">
+            {status.storage_mode} · {status.arize === "enabled" ? "Phoenix" : "Phoenix offline"}
+          </span>
         </div>
-        {/* severity distribution bar */}
-        <div className="mt-5">
-          <div className="flex h-2.5 w-full overflow-hidden rounded bg-zinc-100">
-            {(["critical", "high", "medium", "low"] as Severity[]).map((s) =>
-              sev[s] > 0 ? <div key={s} className={SEV_BAR[s]} style={{ width: percent(sev[s], findings.length) + "%" }} /> : null
-            )}
+
+        {/* metric strip under the title */}
+        <div className="mt-6 flex flex-wrap items-start gap-x-10 gap-y-5">
+          <div>
+            <div className="text-4xl font-semibold tracking-tight text-rose-600">{impacted.size}</div>
+            <div className="text-xs text-zinc-500 mt-1 leading-4">traces containing<br />silent failures · {failRate}%</div>
           </div>
-          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-zinc-600">
-            {(["critical", "high", "medium", "low"] as Severity[]).map((s) => (
-              <span key={s} className="inline-flex items-center gap-1.5">
-                <span className={"h-2 w-2 rounded-sm " + SEV_BAR[s]} /> {s} {sev[s]}
-              </span>
-            ))}
-            <span className="ml-auto text-zinc-400">
-              {status.storage_mode} · {status.arize === "enabled" ? "Phoenix" : "Phoenix offline"}
-            </span>
+
+          <Stat label="traces audited" value={artifacts.length} />
+
+          <div>
+            <div className="text-2xl font-semibold tracking-tight text-zinc-950">{findings.length}</div>
+            <div className="text-xs text-zinc-500 mt-0.5">silent failures</div>
+            <div className="mt-2 w-44">
+              <div className="flex h-2 w-full overflow-hidden rounded bg-zinc-100">
+                {(["critical", "high", "medium", "low"] as Severity[]).map((s) =>
+                  sev[s] > 0 ? <div key={s} className={SEV_BAR[s]} style={{ width: percent(sev[s], findings.length) + "%" }} /> : null
+                )}
+              </div>
+              <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[10px] text-zinc-500">
+                {(["critical", "high", "medium", "low"] as Severity[]).map((s) => (
+                  <span key={s} className="inline-flex items-center gap-1">
+                    <span className={"h-1.5 w-1.5 rounded-sm " + SEV_BAR[s]} />{s} {sev[s]}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
+
+          <Stat label="recurring patterns" value={clusters.length} />
+          <Stat label="regression tests" value={evalCases.length} />
         </div>
       </section>
 
