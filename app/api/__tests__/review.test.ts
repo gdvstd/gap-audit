@@ -73,49 +73,35 @@ describe("postReview", () => {
   });
 });
 
-describe("postConvertToEval", () => {
-  it("converts a confirmed finding to eval", async () => {
+// The convert success path pushes to Phoenix (integration), so unit tests cover the
+// guard rails that return BEFORE any network call.
+describe("postConvertToEval guards", () => {
+  it("returns 404 for nonexistent finding", async () => {
     const memory = await makeSeededMemory();
-    const findings = await memory.listFindings();
-    const id = findings[0]!.finding_id;
-
-    await postReview(memory, id, { decision: "confirmed" });
-    const result = await postConvertToEval(memory, id);
-
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(typeof result.value.eval_id).toBe("string");
-    expect(result.value.source_finding_id).toBe(id);
-  });
-
-  it("sets converted_to_eval=true on the finding after conversion", async () => {
-    const memory = await makeSeededMemory();
-    const findings = await memory.listFindings();
-    const id = findings[0]!.finding_id;
-
-    await postReview(memory, id, { decision: "confirmed" });
-    await postConvertToEval(memory, id);
-
-    const allFindings = await memory.listFindings();
-    const updated = allFindings.find((f) => f.finding_id === id);
-    expect(updated?.converted_to_eval).toBe(true);
+    const result = await postConvertToEval(memory, "nonexistent", {});
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.status).toBe(404);
   });
 
   it("returns 400 if finding is not confirmed", async () => {
     const memory = await makeSeededMemory();
     const findings = await memory.listFindings();
     const id = findings[0]!.finding_id;
-    const result = await postConvertToEval(memory, id);
+    const result = await postConvertToEval(memory, id, { input: "x", dataset_name: "d", target: "new", judge_prompt: "j" });
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.status).toBe(400);
   });
 
-  it("returns 404 for nonexistent finding", async () => {
+  it("returns 400 when the test input is missing", async () => {
     const memory = await makeSeededMemory();
-    const result = await postConvertToEval(memory, "nonexistent");
+    const findings = await memory.listFindings();
+    const id = findings[0]!.finding_id;
+    await postReview(memory, id, { decision: "confirmed" });
+    const result = await postConvertToEval(memory, id, { dataset_name: "d", target: "new", judge_prompt: "j" });
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.status).toBe(404);
+    expect(result.status).toBe(400);
   });
 });

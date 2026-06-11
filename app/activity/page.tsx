@@ -18,8 +18,6 @@ export default async function ActivityPage() {
   const all = await memory.listFindings();
 
   const findings = [...all].sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""));
-  const newestDay = findings[0]?.created_at?.slice(0, 10);
-  const agentCount = findings.filter((f) => f.detection_source === "agent").length;
 
   return (
     <div className="space-y-5">
@@ -34,7 +32,6 @@ export default async function ActivityPage() {
         </div>
         <div className="text-sm text-zinc-500 text-right">
           <div>{findings.length} findings</div>
-          <div className="text-xs text-zinc-400">{agentCount} agent-detected</div>
         </div>
       </div>
 
@@ -48,14 +45,11 @@ export default async function ActivityPage() {
               <th className="py-3 px-3">Problem</th>
               <th className="py-3 px-3">Evidence</th>
               <th className="py-3 px-3">Agent</th>
-              <th className="py-3 px-3">Source</th>
             </tr>
           </thead>
           <tbody>
             {findings.map((finding, i) => {
               const meta = lensMeta(finding.lens);
-              const isNewestDay = finding.created_at?.slice(0, 10) === newestDay;
-              const isAgent = finding.detection_source === "agent";
               return (
                 <tr
                   key={finding.finding_id}
@@ -79,18 +73,12 @@ export default async function ActivityPage() {
                     <div className="font-medium text-zinc-700">{agentLabel(finding.agent_id)}</div>
                     <Link href={"/traces/" + finding.task_id} className="text-blue-700 hover:text-blue-900">{finding.task_id}</Link>
                   </td>
-                  <td className="py-3 px-3">
-                    <span className={"inline-flex px-2 py-0.5 rounded text-xs font-medium " + (isAgent ? "bg-blue-100 text-blue-800" : "bg-zinc-100 text-zinc-600")}>
-                      {finding.detection_source ?? "seed"}
-                    </span>
-                    {isNewestDay && !isAgent && <span className="ml-1 text-[10px] text-zinc-400">today</span>}
-                  </td>
                 </tr>
               );
             })}
             {findings.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-10 text-center text-zinc-400 text-sm">
+                <td colSpan={6} className="py-10 text-center text-zinc-400 text-sm">
                   No findings yet. Run an audit round to populate the feed.
                 </td>
               </tr>

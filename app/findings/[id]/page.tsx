@@ -5,7 +5,8 @@ import { getFindingDetail } from "@/app/api/findings/[id]/logic";
 import { SeverityBadge } from "@/app/_components/severity-badge";
 import { StatusPill } from "@/app/_components/status-pill";
 import { agentLabel, compactEvidence, humanizePatternName, lensMeta } from "@/app/_components/gap-audit-copy";
-import { confirmAction, dismissAction, convertToEvalAction } from "./actions";
+import { confirmAction, dismissAction } from "./actions";
+import { ConvertToRegression } from "./convert-to-regression";
 
 type PageParams = Promise<{ id: string }>;
 
@@ -139,15 +140,12 @@ export default async function FindingDetailPage({ params }: { params: PageParams
               Dismiss
             </button>
           </form>
-          <form action={async () => { "use server"; await convertToEvalAction(finding.finding_id); }}>
-            <button
-              type="submit"
-              disabled={!isConfirmed || finding.converted_to_eval}
-              className="text-sm px-3 py-1.5 rounded bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Convert to regression
-            </button>
-          </form>
+          <ConvertToRegression
+            findingId={finding.finding_id}
+            confirmed={isConfirmed}
+            converted={finding.converted_to_eval}
+            failureMode={finding.failure_mode}
+          />
         </div>
       </section>
     </div>

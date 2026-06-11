@@ -40,7 +40,6 @@ from mcp import StdioServerParameters
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
 MONGODB_DATABASE = os.environ.get("MONGODB_DATABASE", "silentops")
 PHOENIX_PROJECT = os.environ.get("PHOENIX_PROJECT", "gap-audit-demo")
-EVAL_DATASET = os.environ.get("PHOENIX_EVAL_DATASET", "silentops-regression-evals")
 
 # --- Phoenix MCP (Arize track): introspect own operational data at runtime ----------
 # The Phoenix instance is space-scoped (…/s/<space>); the bare PHOENIX_HOST returns 401.
@@ -64,15 +63,13 @@ phoenix_mcp = McpToolset(
             env={"PHOENIX_API_KEY": PHOENIX_API_KEY, "PHOENIX_HOST": PHOENIX_BASE_URL},
         ),
     ),
-    # Introspection (read traces) + eval write-back. These are the verified tool names.
+    # Read-only introspection. The agent SURFACES findings; it does NOT create regression
+    # evals — eval creation is a human-gated step in the review dashboard (convert-to-eval).
     tool_filter=[
         "list-projects",
         "list-traces",
         "get-trace",
         "get-spans",
-        "list-datasets",
-        "add-dataset-examples",
-        "list-experiments-for-dataset",
     ],
 )
 
@@ -272,11 +269,10 @@ silent failures — failures that already look successful — across the SilentO
 DEFINITION — an "auditing round on N traces" (or just "an audit round") means: select the
 N MOST RECENT completed traces from the project (sort by start/end time, newest first;
 default N = 3 when no count is given) and run the FULL pipeline below on EACH selected
-trace — ingest its spans (STEP 1), judge it against all five lenses (STEP 2), persist
-every resulting finding to MongoDB (STEP 3), and register regression evals for any
-high/critical finding (STEP 4). The round is COMPLETE only after the findings have been
-written to MongoDB and you have produced the final summary; do not stop after merely
-listing or reading traces.
+trace — ingest its spans (STEP 1), judge it against all five lenses (STEP 2), and persist
+every resulting finding to MongoDB (STEP 3). The round is COMPLETE only after the findings
+have been written to MongoDB and you have produced the final summary; do not stop after
+merely listing or reading traces.
 
 You operate entirely through your tools. Run this loop yourself.
 
@@ -296,11 +292,13 @@ STEP 1 — INGEST & SELECT NEW (Phoenix MCP + MongoDB MCP). Audit the Phoenix pr
   Collect that id for every candidate trace; it is the id you key findings by — NEVER the
   opaque Phoenix hex trace id.
 
-  INCREMENTAL (do not re-audit completed work): call the MongoDB `find` tool on the
-  "findings" collection with filter {{ "task_id": {{ "$in": [the candidate silentops.task_id
-  values] }} }}, projecting task_id, to learn which are ALREADY audited. Audit ONLY the
-  candidates whose silentops.task_id is NOT already present. If every recent trace is
-  already audited, say so plainly and stop without writing anything.
+  INCREMENTAL (do not re-audit completed work): a trace is ALREADY AUDITED if it appears
+  in EITHER the "findings" collection (a problem was found) OR the "no_findings" collection
+  (it was audited and came back clean). Call the MongoDB `find` tool TWICE — once on
+  "findings", once on "no_findings" — each with filter {{ "task_id": {{ "$in": [the
+  candidate silentops.task_id values] }} }}, projecting task_id. Audit ONLY the candidates
+  whose silentops.task_id is in NEITHER result (the newly-added traces). If every recent
+  trace is already audited, say so plainly and stop without writing anything.
 
   VOCABULARY (reuse, don't rename): also call the MongoDB `aggregate` tool on the
   "findings" collection — [{{ "$group": {{ "_id": {{ "lens": "$lens", "failure_mode":
@@ -343,26 +341,30 @@ STEP 3 — PERSIST (MongoDB MCP). Collect all judged findings as draft dicts wit
   across 4 agents"). Use `count` for a quick total and `find` only to pull one or two
   concrete example documents — prefer `aggregate` over a bare `find` for the pattern.
 
-STEP 4 — EVALS (Phoenix MCP). For each HIGH or CRITICAL confirmed finding, write a
-  regression eval case back via `add-dataset-examples` to dataset "{EVAL_DATASET}"
-  (create it via list-datasets if needed). The example input = the audited trace's
-  declared goal + user input; the expected output = the corrected, served outcome.
+  CLEAN TRACES: for any NEW trace you audited that produced NO finding (genuinely clean),
+  insert one marker into the "no_findings" collection via `insert-many` —
+  {{ "task_id": <silentops.task_id>, "agent_id": <agent>, "lens": "n/a",
+     "reason": "Audited — no service gap detected.", "checked_tools": ["get-spans"],
+     "confidence": 0.9 }} — so the trace is recorded as audited and is NOT re-audited next
+  round. (This is how clean traces get marked done even though they have no finding.)
 
 OUTPUT SAFETY (applies to every finding, whatever the lens): never write raw sensitive
-values into findings, MongoDB, or eval datasets. In `evidence`, reference entity TYPES,
-store names, and span LOCATIONS only — e.g. "unresolved status despite failed refund tool
-in span-2", "raw email retained in memory_write span-3". Never reproduce a literal
-sensitive value.
+values into findings or MongoDB. In `evidence`, reference entity TYPES, store names, and
+span LOCATIONS only — e.g. "unresolved status despite failed refund tool in span-2",
+"raw email retained in memory_write span-3". Never reproduce a literal sensitive value.
 
-STEP 5 — SUMMARISE. Your final turn must be PLAIN TEXT only — do NOT emit any tool call
+You do NOT create regression evals — that is a human-reviewed step in the dashboard. Your
+job ends at surfacing findings.
+
+STEP 4 — SUMMARISE. Your final turn must be PLAIN TEXT only — do NOT emit any tool call
 in it. Report: traces audited, findings written, the breakdown by lens and severity, and
 the recurrence count from STEP 3.
 
 TOOL-CALL HYGIENE (this prevents MALFORMED_FUNCTION_CALL errors): make ONE tool call per
 turn and wait for its result before the next. Keep every call's arguments compact and
 valid JSON — never paste a raw trace dump, span blob, or long quote into an argument;
-summarise instead. Do the eval write-back (STEP 4) exactly once. Never wrap the final
-summary in a function call — STEP 5 is text only.
+summarise instead. Never wrap the final summary in a function call — the last step is text
+only.
 """.strip()
 
 
