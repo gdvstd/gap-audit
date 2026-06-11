@@ -238,6 +238,12 @@ function buildTraceSteps(artifact: AuditArtifact): TraceStep[] {
   return steps;
 }
 
+/** The verbatim input the user actually submitted (from the raw trace), if captured. */
+export function getRawInput(artifact: AuditArtifact): string | undefined {
+  const raw = findRawTrace(artifact.task_id);
+  return raw?.user_input ?? raw?.customer_input;
+}
+
 /** Deep-link to this trace in Arize Phoenix (the source the auditor read from). */
 export function getPhoenixTraceUrl(artifact: AuditArtifact): string | undefined {
   const base = (process.env["PHOENIX_COLLECTOR_ENDPOINT"] ?? "").replace(/\/v1\/traces\/?$/, "") || (process.env["PHOENIX_HOST"] ?? "");
@@ -246,20 +252,31 @@ export function getPhoenixTraceUrl(artifact: AuditArtifact): string | undefined 
   return `${base}/projects/${projectId}/traces/${artifact.phoenix_trace_id}`;
 }
 
-/** The prominent input → expected output → problem triplet shared by both pages. */
-export function IOProblemTriplet({ input, expected, actual, problemLabel, problemText, highlightFindingId }: {
-  input: string;
+/** The prominent input → task → expected output → problem row shared by both pages. */
+export function IOProblemTriplet({ inputSummary, rawInput, task, expected, actual, problemLabel, problemText }: {
+  inputSummary: string;
+  rawInput?: string | undefined;
+  task: string;
   expected: string;
   actual: string;
   problemLabel: string;
   problemText: string;
-  highlightFindingId?: string;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
       <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-zinc-500">Input · what came in</p>
-        <p className="mt-2 text-sm leading-6 text-zinc-800">{input}</p>
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Input Summary</p>
+        <p className="mt-2 text-sm leading-6 text-zinc-800">{inputSummary}</p>
+        {rawInput !== undefined && rawInput !== "" && (
+          <div className="mt-3 border-t border-zinc-200 pt-2">
+            <p className="text-[11px] uppercase tracking-wide text-zinc-400">User input</p>
+            <p className="mt-1 whitespace-pre-wrap text-xs leading-5 text-zinc-600">{rawInput}</p>
+          </div>
+        )}
+      </div>
+      <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Company task</p>
+        <p className="mt-2 text-sm leading-6 text-zinc-800">{task}</p>
       </div>
       <div className="rounded border border-zinc-200 bg-zinc-50 p-4">
         <p className="text-xs uppercase tracking-wide text-zinc-500">Expected output</p>
@@ -269,7 +286,6 @@ export function IOProblemTriplet({ input, expected, actual, problemLabel, proble
         <p className="text-xs uppercase tracking-wide text-rose-600">Problem · {problemLabel}</p>
         <p className="mt-2 text-sm leading-6 text-rose-950">{problemText}</p>
         <p className="mt-2 text-xs text-rose-700/80">Agent ended with: {actual}</p>
-        {highlightFindingId !== undefined && <span className="sr-only">{highlightFindingId}</span>}
       </div>
     </div>
   );

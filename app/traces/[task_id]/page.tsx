@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getMemory } from "@/lib/runtime/container";
 import { SeverityBadge } from "@/app/_components/severity-badge";
 import { agentLabel, lensMeta } from "@/app/_components/gap-audit-copy";
-import { TraceReplay, IOProblemTriplet, getPhoenixTraceUrl, Token, primaryFinding } from "@/app/_components/trace-flow";
+import { TraceReplay, IOProblemTriplet, getPhoenixTraceUrl, getRawInput, Token, primaryFinding } from "@/app/_components/trace-flow";
 
 type PageParams = Promise<{ task_id: string }>;
 
@@ -41,7 +41,9 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
   const meta = mainFinding !== undefined ? lensMeta(mainFinding.lens) : undefined;
   const secondary = relatedFindings.filter((f) => mainFinding === undefined || f.finding_id !== mainFinding.finding_id);
 
-  const input = artifact.user_input_summary ?? artifact.customer_input_summary ?? artifact.declared_goal;
+  const inputSummary = artifact.user_input_summary ?? artifact.customer_input_summary ?? artifact.declared_goal;
+  const rawInput = getRawInput(artifact);
+  const task = artifact.company_task ?? artifact.declared_goal;
   const expected = artifact.customer_goal ?? artifact.declared_goal ?? artifact.user_input_summary;
   const actual = artifact.final_response_summary ?? artifact.final_output_summary;
   const phoenixUrl = getPhoenixTraceUrl(artifact);
@@ -102,7 +104,9 @@ export default async function TraceArtifactPage({ params }: { params: PageParams
             )}
 
             <IOProblemTriplet
-              input={input}
+              inputSummary={inputSummary}
+              rawInput={rawInput}
+              task={task}
               expected={expected}
               actual={actual}
               problemLabel={meta?.label ?? "—"}

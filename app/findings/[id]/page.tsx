@@ -6,7 +6,7 @@ import { StatusPill } from "@/app/_components/status-pill";
 import { agentLabel, humanizePatternName, lensMeta } from "@/app/_components/gap-audit-copy";
 import { confirmAction, dismissAction } from "./actions";
 import { ConvertToRegression } from "./convert-to-regression";
-import { TraceReplay, IOProblemTriplet, getPhoenixTraceUrl } from "@/app/_components/trace-flow";
+import { TraceReplay, IOProblemTriplet, getPhoenixTraceUrl, getRawInput } from "@/app/_components/trace-flow";
 
 type PageParams = Promise<{ id: string }>;
 
@@ -26,7 +26,9 @@ export default async function FindingDetailPage({ params }: { params: PageParams
   else if (isConfirmed) statusValue = "confirmed";
   else if (isDismissed) statusValue = "dismissed";
 
-  const input = artifact?.user_input_summary ?? artifact?.customer_input_summary ?? artifact?.declared_goal ?? "Not captured in this trace.";
+  const inputSummary = artifact?.user_input_summary ?? artifact?.customer_input_summary ?? artifact?.declared_goal ?? "Not captured in this trace.";
+  const rawInput = artifact !== undefined ? getRawInput(artifact) : undefined;
+  const task = artifact?.company_task ?? artifact?.declared_goal ?? "Not captured in this trace.";
   const expected = artifact?.customer_goal ?? artifact?.declared_goal ?? "Not captured in this trace.";
   const actual = artifact?.final_response_summary ?? artifact?.final_output_summary ?? "Not captured in this trace.";
   const phoenixUrl = artifact !== undefined ? getPhoenixTraceUrl(artifact) : undefined;
@@ -54,7 +56,7 @@ export default async function FindingDetailPage({ params }: { params: PageParams
 
       {/* Input → Expected output → Problem triplet */}
       <section className="bg-white border border-zinc-200 rounded-lg p-5">
-        <IOProblemTriplet input={input} expected={expected} actual={actual} problemLabel={meta.label} problemText={meta.problem} />
+        <IOProblemTriplet inputSummary={inputSummary} rawInput={rawInput} task={task} expected={expected} actual={actual} problemLabel={meta.label} problemText={meta.problem} />
       </section>
 
       {/* Expandable trace replay + Phoenix link */}
