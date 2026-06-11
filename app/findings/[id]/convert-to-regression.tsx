@@ -29,6 +29,7 @@ export function ConvertToRegression({
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<{ dataset: string; action: string } | null>(null);
+  const [prepared, setPrepared] = useState(false);
 
   const [suites, setSuites] = useState<Suite[]>([]);
   const [target, setTarget] = useState<"existing" | "new">("new");
@@ -40,6 +41,7 @@ export function ConvertToRegression({
 
   async function start() {
     setOpen(true);
+    setPrepared(false);
     setLoading(true);
     setError(null);
     try {
@@ -62,6 +64,7 @@ export function ConvertToRegression({
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
+      setPrepared(true);
     }
   }
 
@@ -128,7 +131,9 @@ export function ConvertToRegression({
         <button type="button" onClick={() => setOpen(false)} className="text-xs text-zinc-500 hover:text-zinc-800">close</button>
       </div>
 
-      {done ? (
+      {!prepared ? (
+        <p className="text-sm text-zinc-500">Loading existing test suites…</p>
+      ) : done ? (
         <p className="text-sm text-emerald-700">
           Added to &ldquo;{done.dataset}&rdquo; in Phoenix ({done.action}). <a href="/evals" className="underline">View in Regressions →</a>
         </p>
